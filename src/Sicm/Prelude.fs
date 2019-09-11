@@ -1,4 +1,4 @@
-[<AutoOpen>]
+﻿[<AutoOpen>]
 module Sicm.Prelude
 
 open Microsoft.FSharp.Core.Printf

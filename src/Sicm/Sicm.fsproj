@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
@@ -16,8 +16,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Prelude.fs" />
+    <Compile Include="SicmPrelude.fs" />
     <Compile Include="UOM.fs" />
-    <Compile Include="Library.fs" />
+    <Compile Include="Ch1LagrangianMechanics.fs" />
     <None Include="Scripts\Script.fsx" />
     <None Include="paket.references" />
     <None Include="paket.template" />
