@@ -3,7 +3,7 @@ namespace Sicm
 open System.Numerics
 
 /// Chapter 1, Lagrangian Mechanics
-module LagrangianMechanics = 
+module Ch1_LagrangianMechanics = 
 
     /// (define velocity state->qdot)
     let velocity = firstDerivative
@@ -34,3 +34,26 @@ module LagrangianMechanics =
         let inline lagrangianFreeParticle mass local = 
             let v = velocity local
             (mass * (dotProduct v v)) / 2
+
+        /// (define (Lagrangian-action L q t1 t2)
+        ///     (definite-integral (compose L (Gamma q)) t1 t2))
+        let lagrangianAction lagrangian path time1 time2 =
+            //to do
+            ()
+
+
+
+        
+
+        /// (define (test-path t)
+        ///     (up (+ (* 4 t) 7)
+        ///         (+ (* 3 t) 5)
+        ///         (+ (* 2 t) 1)))
+        let testPath (time : Time) =
+            [|
+                4 * time + 7
+                3 * time + 5
+                2 * time + 1
+            |]
+
+        

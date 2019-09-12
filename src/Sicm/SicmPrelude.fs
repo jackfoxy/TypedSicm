@@ -2,6 +2,7 @@
 module Sicm.SicmPrelude
 
 open System.Numerics
+open MathNet.Numerics
 
 type LocalMetric =
     | Int of int
@@ -272,6 +273,12 @@ type State =
         Local : Local
         Dt : (Local -> Time -> array<LocalMetric>) list
     }
+
+type Up =
+    | LocalMetric of LocalMetric
+    | Func1 of (LocalMetric -> LocalMetric)
+    | Func2 of (LocalMetric -> LocalMetric -> LocalMetric)
+    | Up of Up []
   
 /// (define (state->qdot state)
 ///    (if (not (and (vector? state) (fix:> (vector-length state) 2)))
@@ -279,3 +286,30 @@ type State =
 ///    (ref state 2))
 let firstDerivative (state : State) =
     state.Dt.Head state.Local state.Time
+
+/// (define (path->state-path q #!optional n)
+/// (if (default-object? n)
+///     (set! n 3)
+///     (assert (fix:> n 1)))
+/// (lambda (t)
+///   (list->vector
+///    (cons t
+///        (cons (q t)
+///          (let lp ((i (fix:- n 2)) (fi (D q)))
+///            (if (fix:= i 0)
+///                '()
+///                (cons (fi t)
+///                  (lp (- i 1)
+///                  (D fi))))))))))
+///
+/// (define Gamma path->state-path)
+let gamma q time =
+    Up.Up
+        [|
+            Up.LocalMetric time
+            Up.Up
+                [|
+                    // to do
+                    //Up.Func1 time
+                |]
+        |]
