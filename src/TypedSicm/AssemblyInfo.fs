@@ -2,7 +2,7 @@
 namespace System
 open System.Reflection
 
-[<assembly: AssemblyTitleAttribute("Server")>]
+[<assembly: AssemblyTitleAttribute("TypedSicm")>]
 [<assembly: AssemblyProductAttribute("TypedSicm")>]
 [<assembly: AssemblyDescriptionAttribute("Typed Sicm")>]
 [<assembly: AssemblyVersionAttribute("0.0.1")>]
@@ -11,7 +11,7 @@ open System.Reflection
 do ()
 
 module internal AssemblyVersionInformation =
-    let [<Literal>] AssemblyTitle = "Server"
+    let [<Literal>] AssemblyTitle = "TypedSicm"
     let [<Literal>] AssemblyProduct = "TypedSicm"
     let [<Literal>] AssemblyDescription = "Typed Sicm"
     let [<Literal>] AssemblyVersion = "0.0.1"

@@ -1,0 +1,29 @@
+type file
+id TypedSicm
+title
+    TypedSicm
+owners
+    Jack Fox
+authors 
+    Jack Fox
+projectUrl
+    https://github.com/jackfoxy/TypedSicm
+iconUrl
+    https://raw.githubusercontent.com/jackfoxy/TypedSicm/master/docs/files/img/logo.png
+licenseUrl
+    https://github.com/jackfoxy/TypedSicm/blob/master/LICENSE.txt
+requireLicenseAcceptance
+    false
+language
+    F#
+copyright
+    Copyright 2017
+tags
+    F# sicm mechanics physics
+summary
+    Typed Sicm
+description
+    Structure and Interpretation of Classical Mechanics, 2nd edition, in F#
+
+files
+	../../bin/TypedSicm ==> lib

@@ -21,11 +21,11 @@ open Fake.Tools
 
 // The name of the project
 // (used by attributes in AssemblyInfo, name of a NuGet package and directory in 'src')
-let project = "Sicm"
+let project = "TypedSicm"
 
 // Short summary of the project
 // (used as description in AssemblyInfo and as a short summary for NuGet package)
-let summary = "SICM"
+let summary = "Typed Sicm"
 
 // Longer description of the project
 // (used as a description for NuGet package; line breaks are automatically cleaned up)
@@ -38,7 +38,7 @@ let author = "Jack Fox"
 let tags = "F# sicm mechanics physics"
 
 // File system information
-let solutionFile  = "Sicm.sln"
+let solutionFile  = "TypedSicm.sln"
 
 // Default target configuration
 let configuration = "Release"
@@ -52,9 +52,9 @@ let gitOwner = "jackfoxy"
 let gitHome = sprintf "%s/%s" "https://github.com" gitOwner
 
 // The name of the project on GitHub
-let gitName = "Sicm"
+let gitName = "TypedSicm"
 
-let website = sprintf "/%s" "Sicm"
+let website = sprintf "/%s" "TypedSicm"
 
 let testFolder = sprintf "../tests/%s.Tests" project
 

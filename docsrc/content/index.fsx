@@ -1,10 +1,10 @@
 (*** hide ***)
 // This block of code is omitted in the generated HTML documentation. Use 
 // it to define helpers that you do not want to show in the documentation.
-#I "../../bin/Sicm"
+#I "../../bin/TypedSicm"
 
 (**
-Sicm
+TypedSicm
 ======================
 
 Documentation
@@ -13,8 +13,8 @@ Documentation
   <div class="span1"></div>
   <div class="span6">
     <div class="well well-small" id="nuget">
-      The Sicm library can be <a href="https://nuget.org/packages/Sicm">installed from NuGet</a>:
-      <pre>PM> Install-Package Sicm</pre>
+      The TypedSicm library can be <a href="https://nuget.org/packages/TypedSicm">installed from NuGet</a>:
+      <pre>PM> Install-Package TypedSicm</pre>
     </div>
   </div>
   <div class="span1"></div>
@@ -35,8 +35,8 @@ Example
 This example demonstrates using a function defined in this sample library.
 
 *)
-#r "Sicm.dll"
-open Sicm
+#r "TypedSicm.dll"
+open TypedSicm
 
 printfn "hello = %i" <| Library.hello 0
 
@@ -68,9 +68,9 @@ The library is available under Public Domain license, which allows modification 
 redistribution for both commercial and non-commercial purposes. For more information see the 
 [License file][license] in the GitHub repository. 
 
-  [content]: https://github.com/fsprojects/Sicm/tree/master/docs/content
-  [gh]: https://github.com/fsprojects/Sicm
-  [issues]: https://github.com/fsprojects/Sicm/issues
-  [readme]: https://github.com/fsprojects/Sicm/blob/master/README.md
-  [license]: https://github.com/fsprojects/Sicm/blob/master/LICENSE.txt
+  [content]: https://github.com/fsprojects/TypedSicm/tree/master/docs/content
+  [gh]: https://github.com/fsprojects/TypedSicm
+  [issues]: https://github.com/fsprojects/TypedSicm/issues
+  [readme]: https://github.com/fsprojects/TypedSicm/blob/master/README.md
+  [license]: https://github.com/fsprojects/TypedSicm/blob/master/LICENSE.txt
 *)

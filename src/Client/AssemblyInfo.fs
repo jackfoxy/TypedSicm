@@ -3,8 +3,8 @@ namespace System
 open System.Reflection
 
 [<assembly: AssemblyTitleAttribute("Client")>]
-[<assembly: AssemblyProductAttribute("Sicm")>]
-[<assembly: AssemblyDescriptionAttribute("SICM")>]
+[<assembly: AssemblyProductAttribute("TypedSicm")>]
+[<assembly: AssemblyDescriptionAttribute("Typed Sicm")>]
 [<assembly: AssemblyVersionAttribute("0.0.1")>]
 [<assembly: AssemblyFileVersionAttribute("0.0.1")>]
 [<assembly: AssemblyConfigurationAttribute("Release")>]
@@ -12,8 +12,8 @@ do ()
 
 module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "Client"
-    let [<Literal>] AssemblyProduct = "Sicm"
-    let [<Literal>] AssemblyDescription = "SICM"
+    let [<Literal>] AssemblyProduct = "TypedSicm"
+    let [<Literal>] AssemblyDescription = "Typed Sicm"
     let [<Literal>] AssemblyVersion = "0.0.1"
     let [<Literal>] AssemblyFileVersion = "0.0.1"
     let [<Literal>] AssemblyConfiguration = "Release"
