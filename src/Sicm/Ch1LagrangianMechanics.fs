@@ -21,11 +21,11 @@ module Ch1_LagrangianMechanics =
     ///       (g:+ ans
     ///        (g:* (vector-ref v1 i)
     ///         (vector-ref v2 i))))))))
-    let inline dotProduct (vector1 : array<LocalMetric>)  (vector2 : array<LocalMetric>)  =
+    let inline dotProduct (vector1 : LocalMetric list)  (vector2 : LocalMetric list)  =
         vector1
-        |> Array.zip vector2
-        |> Array.map (fun (v1, v2) -> v1 * v2)
-        |> Array.fold (fun s t -> t + s ) (Int 0)
+        |> List.zip vector2
+        |> List.map (fun (v1, v2) -> v1 * v2)
+        |> List.fold (fun s t -> t + s ) (Int 0)
 
     module S4ComputingActions =
         /// (define ((L-free-particle mass) local)
@@ -50,10 +50,10 @@ module Ch1_LagrangianMechanics =
         ///         (+ (* 3 t) 5)
         ///         (+ (* 2 t) 1)))
         let testPath (time : Time) =
-            [|
+            [
                 4 * time + 7
                 3 * time + 5
                 2 * time + 1
-            |]
+            ]
 
         

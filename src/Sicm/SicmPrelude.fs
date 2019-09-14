@@ -271,14 +271,14 @@ type State =
     {
         Time : Time
         Local : Local
-        Dt : (Local -> Time -> array<LocalMetric>) list
+        Dt : (Local -> Time -> LocalMetric list) list
     }
 
-type Up =
+type UpIndexed =
     | LocalMetric of LocalMetric
     | Func1 of (LocalMetric -> LocalMetric)
     | Func2 of (LocalMetric -> LocalMetric -> LocalMetric)
-    | Up of Up []
+    | UpIndexed of UpIndexed list
   
 /// (define (state->qdot state)
 ///    (if (not (and (vector? state) (fix:> (vector-length state) 2)))
@@ -304,12 +304,12 @@ let firstDerivative (state : State) =
 ///
 /// (define Gamma path->state-path)
 let gamma q time =
-    Up.Up
-        [|
-            Up.LocalMetric time
-            Up.Up
-                [|
+    UpIndexed
+        [
+            UpIndexed.LocalMetric time
+            UpIndexed
+                [
                     // to do
                     //Up.Func1 time
-                |]
-        |]
+                ]
+        ]
