@@ -263,7 +263,10 @@ type LocalMetric =
     
 type Time = LocalMetric
 
-type Local = array<LocalMetric>
+type Func1 = LocalMetric -> LocalMetric
+type Func2 = LocalMetric -> LocalMetric -> LocalMetric
+
+type Local = Func1 list
 
 type Derivative = unit
 
@@ -276,10 +279,17 @@ type State =
 
 type UpIndexed =
     | LocalMetric of LocalMetric
-    | Func1 of (LocalMetric -> LocalMetric)
-    | Func2 of (LocalMetric -> LocalMetric -> LocalMetric)
+    | Func1 of Func1
+    | Func2 of Func2
     | UpIndexed of UpIndexed list
-  
+    | DownIndexed of DownIndexed list
+and DownIndexed =
+    | LocalMetric of LocalMetric
+    | Func1 of Func1
+    | Func2 of Func2
+    | DownIndexed of DownIndexed list
+    | UpIndexed of UpIndexed list
+
 /// (define (state->qdot state)
 ///    (if (not (and (vector? state) (fix:> (vector-length state) 2)))
 ///        (error "Cannot extract velocity from" state))
@@ -287,29 +297,8 @@ type UpIndexed =
 let firstDerivative (state : State) =
     state.Dt.Head state.Local state.Time
 
-/// (define (path->state-path q #!optional n)
-/// (if (default-object? n)
-///     (set! n 3)
-///     (assert (fix:> n 1)))
-/// (lambda (t)
-///   (list->vector
-///    (cons t
-///        (cons (q t)
-///          (let lp ((i (fix:- n 2)) (fi (D q)))
-///            (if (fix:= i 0)
-///                '()
-///                (cons (fi t)
-///                  (lp (- i 1)
-///                  (D fi))))))))))
-///
-/// (define Gamma path->state-path)
-let gamma q time =
-    UpIndexed
-        [
-            UpIndexed.LocalMetric time
-            UpIndexed
-                [
-                    // to do
-                    //Up.Func1 time
-                ]
-        ]
+let fstD (f : Func1) (time : Time) : LocalMetric =
+    LocalMetric.Float 0.  // to do: 1st time derivative of coordinate
+    //MathNet.Numerics.Differentiate.firstDerivativeFunc (f :?> (float -> float) )
+
+

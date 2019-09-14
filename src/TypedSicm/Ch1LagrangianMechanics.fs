@@ -35,25 +35,53 @@ module Ch1_LagrangianMechanics =
             let v = velocity local
             (mass * (dotProduct v v)) / 2
 
+        /// (define (path->state-path q #!optional n)
+        /// (if (default-object? n)
+        ///     (set! n 3)
+        ///     (assert (fix:> n 1)))
+        /// (lambda (t)
+        ///   (list->vector
+        ///    (cons t
+        ///        (cons (q t)
+        ///          (let lp ((i (fix:- n 2)) (fi (D q)))
+        ///            (if (fix:= i 0)
+        ///                '()
+        ///                (cons (fi t)
+        ///                  (lp (- i 1)
+        ///                  (D fi))))))))))
+        ///
+        /// (define Gamma path->state-path)
+        //let inline gamma (q : UpIndexed list ) (time : Time) =
+        let gamma (q : Local ) (time : Time) =
+            let coordinate, derivatives =
+                q
+                |> List.map (fun x -> (UpIndexed.LocalMetric (x time)),  UpIndexed.LocalMetric (fstD x time))
+                |> List.unzip
+        
+            UpIndexed.UpIndexed
+                [
+                    UpIndexed.LocalMetric time
+                    UpIndexed.UpIndexed coordinate
+                    UpIndexed.UpIndexed derivatives  
+                ]
+
         /// (define (Lagrangian-action L q t1 t2)
         ///     (definite-integral (compose L (Gamma q)) t1 t2))
         let lagrangianAction lagrangian path time1 time2 =
             //to do
-            ()
-
-
-
-        
+            gamma path
+            |> lagrangian
+            //|> definiteIntegral
 
         /// (define (test-path t)
         ///     (up (+ (* 4 t) 7)
         ///         (+ (* 3 t) 5)
         ///         (+ (* 2 t) 1)))
-        let testPath (time : Time) =
+        let testPath : Local  =
             [
-                4 * time + 7
-                3 * time + 5
-                2 * time + 1
+                fun (time : Time) -> 4 * time + 7
+                fun (time : Time) -> 3 * time + 5
+                fun (time : Time) -> 2 * time + 1
             ]
 
         
