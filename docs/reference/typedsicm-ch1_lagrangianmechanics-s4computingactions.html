@@ -55,14 +55,48 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
-            lagrangianAction(...)
+            gamma q time
           </code>
           <div class="tip" id="3">
-            <strong>Signature:</strong> lagrangian:&#39;?8212 -&gt; path:&#39;?8213 -&gt; time1:&#39;?8214 -&gt; time2:&#39;?8215 -&gt; unit<br />
-                          <strong>Type parameters:</strong> '?8212, '?8213, '?8214, '?8215                      </div>
+            <strong>Signature:</strong> q:Local -&gt; time:Time -&gt; UpIndexed<br />
+                                  </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L40-40" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L55-55" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>(define (path-&gt;state-path q #!optional n)
+(if (default-object? n)
+(set! n 3)
+(assert (fix:&gt; n 1)))
+(lambda (t)
+(list-&gt;vector
+(cons t
+(cons (q t)
+(let lp ((i (fix:- n 2)) (fi (D q)))
+(if (fix:= i 0)
+'()
+(cons (fi t)
+(lp (- i 1)
+(D fi))))))))))</p>
+<p>(define Gamma path-&gt;state-path)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+            lagrangianAction(...)
+          </code>
+          <div class="tip" id="4">
+            <strong>Signature:</strong> lagrangian:((Time -&gt; UpIndexed) -&gt; &#39;?8213) -&gt; path:Local -&gt; time1:&#39;?8214 -&gt; time2:&#39;?8215 -&gt; &#39;?8213<br />
+                          <strong>Type parameters:</strong> '?8213, '?8214, '?8215                      </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L70-70" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -75,10 +109,10 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+          <code onmouseout="hideTip(event, '5', 5)" onmouseover="showTip(event, '5', 5)">
             lagrangianFreeParticle mass local
           </code>
-          <div class="tip" id="4">
+          <div class="tip" id="5">
             <strong>Signature:</strong> mass:^?8210 -&gt; local:State -&gt; int<br />
                           <strong>Type parameters:</strong> ^?8210                      </div>
         </td>
@@ -97,15 +131,15 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '5', 5)" onmouseover="showTip(event, '5', 5)">
-            testPath(time)
+          <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
+            testPath
           </code>
-          <div class="tip" id="5">
-            <strong>Signature:</strong> time:Time -&gt; LocalMetric list<br />
+          <div class="tip" id="6">
+            <strong>Signature:</strong> Local<br />
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L52-52" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L80-80" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>

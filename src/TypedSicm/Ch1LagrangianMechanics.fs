@@ -55,7 +55,7 @@ module Ch1_LagrangianMechanics =
         let gamma (q : Local ) (time : Time) =
             let coordinate, derivatives =
                 q
-                |> List.map (fun x -> (UpIndexed.LocalMetric (x time)),  UpIndexed.LocalMetric (fstD x time))
+                |> List.map (fun x -> (UpIndexed.LocalMetric (x time)),  UpIndexed.LocalMetric (derivitave x time))
                 |> List.unzip
         
             UpIndexed.UpIndexed
@@ -79,9 +79,12 @@ module Ch1_LagrangianMechanics =
         ///         (+ (* 2 t) 1)))
         let testPath : Local  =
             [
-                fun (time : Time) -> 4 * time + 7
-                fun (time : Time) -> 3 * time + 5
-                fun (time : Time) -> 2 * time + 1
+                //fun (time : Time) -> 4 * time + 7
+                //fun (time : Time) -> 3 * time + 5
+                //fun (time : Time) -> 2 * time + 1
+                fun (time : Time) -> 4. * (localMetricToFloat time) + 7. |> Float
+                fun (time : Time) -> 3. * (localMetricToFloat time) + 5. |> Float
+                fun (time : Time) -> 2. * (localMetricToFloat time) + 1. |> Float
             ]
 
         

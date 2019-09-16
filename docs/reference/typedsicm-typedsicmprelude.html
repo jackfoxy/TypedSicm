@@ -65,6 +65,30 @@
         </tr>
         <tr>
           <td class="type-name">
+            <a href="typedsicm-typedsicmprelude-downindexed.html">DownIndexed</a>
+          </td>
+          <td class="xmldoc">
+          
+          </td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="typedsicm-typedsicmprelude-func1.html">Func1</a>
+          </td>
+          <td class="xmldoc">
+          
+          </td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="typedsicm-typedsicmprelude-func2.html">Func2</a>
+          </td>
+          <td class="xmldoc">
+          
+          </td>
+        </tr>
+        <tr>
+          <td class="type-name">
             <a href="typedsicm-typedsicmprelude-local.html">Local</a>
           </td>
           <td class="xmldoc">
@@ -117,15 +141,33 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
+          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
+            derivitave f time
+          </code>
+          <div class="tip" id="7">
+            <strong>Signature:</strong> f:Func1 -&gt; time:Time -&gt; LocalMetric<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L330-330" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8', 8)" onmouseover="showTip(event, '8', 8)">
             firstDerivative(state)
           </code>
-          <div class="tip" id="6">
+          <div class="tip" id="8">
             <strong>Signature:</strong> state:State -&gt; LocalMetric list<br />
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L287-287" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L327-327" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -140,35 +182,55 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
-            gamma q time
+          <code onmouseout="hideTip(event, '9', 9)" onmouseover="showTip(event, '9', 9)">
+            localMetricToFloat(localMetric)
           </code>
-          <div class="tip" id="7">
-            <strong>Signature:</strong> q:&#39;?8296 -&gt; time:LocalMetric -&gt; UpIndexed<br />
-                          <strong>Type parameters:</strong> '?8296                      </div>
+          <div class="tip" id="9">
+            <strong>Signature:</strong> localMetric:LocalMetric -&gt; float<br />
+                                  </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L306-306" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L264-264" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>(define (path-&gt;state-path q #!optional n)
-(if (default-object? n)
-(set! n 3)
-(assert (fix:&gt; n 1)))
-(lambda (t)
-(list-&gt;vector
-(cons t
-(cons (q t)
-(let lp ((i (fix:- n 2)) (fi (D q)))
-(if (fix:= i 0)
-'()
-(cons (fi t)
-(lp (- i 1)
-(D fi))))))))))</p>
-<p>(define Gamma path-&gt;state-path)</p>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
 
+          <code onmouseout="hideTip(event, '10', 10)" onmouseover="showTip(event, '10', 10)">
+            wrapFloatFunction(f)
+          </code>
+          <div class="tip" id="10">
+            <strong>Signature:</strong> f:(float -&gt; float) -&gt; LocalMetric<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L273-273" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
 
+          <code onmouseout="hideTip(event, '11', 11)" onmouseover="showTip(event, '11', 11)">
+            wrapFunc1 f y
+          </code>
+          <div class="tip" id="11">
+            <strong>Signature:</strong> f:Func1 -&gt; y:float -&gt; float<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/TypedSicmPrelude.fs#L289-289" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
     </tbody>

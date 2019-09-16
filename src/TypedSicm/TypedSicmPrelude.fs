@@ -11,7 +11,7 @@ type LocalMetric =
     | Float of float
     | Complex of Complex
   //  | Quaternion of ...  //implement netstandard2.1 preview
-    | Function  of (LocalMetric -> LocalMetric)
+    | Function of (LocalMetric -> LocalMetric)
    with 
     static member (+) (x, y) = 
         match x, y with
@@ -261,10 +261,40 @@ type LocalMetric =
         | Complex y -> Complex (new Complex(float x, 0.) / y)
         | Function y -> Function (fun z -> x / (y z))
     
+let localMetricToFloat localMetric =
+    match localMetric with
+    | Int x -> float x
+    | Int64 x -> float x
+    | BigInt x -> float x
+    | Float x -> x
+    | Complex x -> x.Real
+    | Function x -> 0.
+
+let wrapFloatFunction (f : (float -> float)) =
+    fun (y : LocalMetric) -> 
+        match y with
+        | Int y ->  f (float y) |> Float
+        | Int64 y -> f (float  y) |> Float
+        | BigInt y -> f (float  y) |> Float
+        | Float y -> f y |> Float
+        | Complex y -> f y.Real |> Float
+        | Function y -> f 0. |> Float
+    |> LocalMetric.Function
+
 type Time = LocalMetric
 
 type Func1 = LocalMetric -> LocalMetric
 type Func2 = LocalMetric -> LocalMetric -> LocalMetric
+
+let wrapFunc1 (f : Func1) =
+    (fun (y : float) -> 
+        match (f (Float y)) with
+        | Int z -> float z
+        | Int64 z -> float z
+        | BigInt z -> float z
+        | Float z -> z
+        | Complex z -> z.Real
+        | Function _ -> 0. ) 
 
 type Local = Func1 list
 
@@ -297,8 +327,7 @@ and DownIndexed =
 let firstDerivative (state : State) =
     state.Dt.Head state.Local state.Time
 
-let fstD (f : Func1) (time : Time) : LocalMetric =
-    LocalMetric.Float 0.  // to do: 1st time derivative of coordinate
-    //MathNet.Numerics.Differentiate.firstDerivativeFunc (f :?> (float -> float) )
-
-
+let derivitave (f : Func1) (time : Time) =
+  //  LocalMetric.Float 0.  // to do: 1st time derivative of coordinate
+    MathNet.Numerics.Differentiate.firstDerivativeFunc (wrapFunc1 f) 
+    |> wrapFloatFunction
