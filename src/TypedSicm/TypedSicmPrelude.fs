@@ -1,6 +1,7 @@
 [<AutoOpen>]
 module TypedSicm.TypedSicmPrelude
 
+open System
 open System.Numerics
 open MathNet.Numerics
 
@@ -10,7 +11,7 @@ type LocalMetric =
     | BigInt of BigInteger
     | Float of float
     | Complex of Complex
-  //  | Quaternion of ...  //implement netstandard2.1 preview
+    //| Quaternion of Quaternion
     | Function of (LocalMetric -> LocalMetric)
    with 
     static member (+) (x, y) = 
@@ -329,5 +330,9 @@ let firstDerivative (state : State) =
 
 let derivitave (f : Func1) (time : Time) =
   //  LocalMetric.Float 0.  // to do: 1st time derivative of coordinate
-    MathNet.Numerics.Differentiate.firstDerivativeFunc (wrapFunc1 f) 
+    Differentiate.firstDerivativeFunc (wrapFunc1 f) 
     |> wrapFloatFunction
+
+let definiteIntegral (f : float -> float) start finish =
+    let f' : System.Func<float, float> = System.Func<float, float>(f)
+    Integrate.OnClosedInterval(f', start, finish)
