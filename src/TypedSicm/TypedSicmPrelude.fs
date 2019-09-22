@@ -343,11 +343,12 @@ let firstDerivative (state : State) =
         xs
         |> List.map (fun x -> 
             match x with
-            | UpIndexed.Func2 x' -> x' 
+            | UpIndexed.Func1 x' -> x' 
+            | UpIndexed.LocalMetric x' -> fun _ -> x'      //??? returning then calculated value
         //    | _ -> x     //??? returning then calculated value
         )
     |> List.zip local
-    |> List.map (fun (localFunction, d') -> d' localFunction time)
+    |> List.map (fun (localFunction, d') -> d' (localFunction time))
 
 let derivitave (f : Func1) = //(time : Time) =
     Differentiate.firstDerivativeFunc (wrapFunc1 f) 

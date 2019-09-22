@@ -1,8 +1,8 @@
 namespace TypedSicm.Tests
 
 open Expecto
-open FsCheck
-open GeneratorsCode
+//open FsCheck
+//open GeneratorsCode
 open TypedSicm
 
 module Tests =
@@ -16,14 +16,13 @@ module Tests =
         
         testList "DomainTypes.Tag" [
             testCase "equality" <| fun () ->
-              //  let result = 42
                 let result = Ch1_LagrangianMechanics.S4ComputingActions.test()
-                Expect.isTrue (result = 42.) "Expected True"
+                Expect.floatClose Accuracy.high result 435. "Expected 435"
 
-            testPropertyWithConfig config10k "whitespace" <|
-                fun  () ->
-                    Prop.forAll (Arb.fromGen <| whitespaceString())
-                        (fun (x : string) -> 
-                            x = x)
+            //testPropertyWithConfig config10k "whitespace" <|
+            //    fun  () ->
+            //        Prop.forAll (Arb.fromGen <| whitespaceString())
+            //            (fun (x : string) -> 
+            //                x = x)
         ]
 
