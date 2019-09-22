@@ -4,7 +4,7 @@ source https://api.nuget.org/v3/index.json
 nuget FSharp.Core
 nuget Argu
 
-nuget Expecto
+nuget Expecto 8.9.1
 nuget Expecto.BenchmarkDotNet
 nuget Expecto.FsCheck
 nuget Expecto.VisualStudio.TestAdapter version_in_path: true

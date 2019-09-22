@@ -3,6 +3,7 @@ namespace TypedSicm.Tests
 open Expecto
 open FsCheck
 open GeneratorsCode
+open TypedSicm
 
 module Tests =
     let config10k = { FsCheckConfig.defaultConfig with maxTest = 10000}
@@ -12,11 +13,12 @@ module Tests =
 
     [<Tests>]
     let testSimpleTests =
-
+        
         testList "DomainTypes.Tag" [
             testCase "equality" <| fun () ->
-                let result = 42
-                Expect.isTrue (result = 42) "Expected True"
+              //  let result = 42
+                let result = Ch1_LagrangianMechanics.S4ComputingActions.test()
+                Expect.isTrue (result = 42.) "Expected True"
 
             testPropertyWithConfig config10k "whitespace" <|
                 fun  () ->

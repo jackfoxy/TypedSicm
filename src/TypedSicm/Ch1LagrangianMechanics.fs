@@ -31,9 +31,11 @@ module Ch1_LagrangianMechanics =
         /// (define ((L-free-particle mass) local)
         /// (let ((v (velocity local)))
         /// (* 1/2 mass (dot-product v v))))
-        let inline lagrangianFreeParticle mass local = 
-            let v = velocity local
-            (mass * (dotProduct v v)) / 2
+        let inline lagrangianFreeParticle (mass : LocalMetric) local = 
+                let v = velocity local // :> (LocalMetric -> LocalMetric) list// :> LocalMetric list
+              //  let v' = v |> List.map (fun f -> f localMetric)
+                (mass * (dotProduct v v)) / 2
+            //fun (time : LocalMetric) -> (mass * (dotProduct (v time) (v time))) / 2
 
         /// (define (path->state-path q #!optional n)
         /// (if (default-object? n)
@@ -55,23 +57,24 @@ module Ch1_LagrangianMechanics =
         let gamma (q : Local ) (time : Time) =
             let coordinate, derivatives =
                 q
-                |> List.map (fun x -> (UpIndexed.LocalMetric (x time)),  UpIndexed.LocalMetric (derivitave x time))
+               // |> List.map (fun x -> (UpIndexed.LocalMetric (x time)),  UpIndexed.LocalMetric (derivitave x time))
+                |> List.map (fun x -> UpIndexed.Func1 x,  UpIndexed.LocalMetric (derivitave x)) // time))
                 |> List.unzip
-        
-            UpIndexed.UpIndexed
-                [
-                    UpIndexed.LocalMetric time
-                    UpIndexed.UpIndexed coordinate
-                    UpIndexed.UpIndexed derivatives  
-                ]
+
+            {
+                Time = UpIndexed.LocalMetric time
+                Local = UpIndexed.UpIndexed coordinate
+                Dt = [UpIndexed.UpIndexed derivatives] 
+            }
 
         /// (define (Lagrangian-action L q t1 t2)
         ///     (definite-integral (compose L (Gamma q)) t1 t2))
-        let lagrangianAction lagrangian path time1 time2 =
-            //to do
-            gamma path
-            |> lagrangian
-            //|> definiteIntegral
+        let lagrangianAction (lagrangian : State -> LocalMetric) path time1 time2 =
+            let f =
+                fun time ->
+                    lagrangian (gamma path time) 
+                |> definiteIntegral
+            f time1 time2
 
         /// (define (test-path t)
         ///     (up (+ (* 4 t) 7)
@@ -87,4 +90,5 @@ module Ch1_LagrangianMechanics =
                 fun (time : Time) -> 2. * (localMetricToFloat time) + 1. |> Float
             ]
 
+        let test () = lagrangianAction (lagrangianFreeParticle (LocalMetric.Int 3)) testPath 0. 10.
         
