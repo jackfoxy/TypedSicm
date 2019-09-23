@@ -1,7 +1,5 @@
 namespace TypedSicm
 
-open System.Numerics
-
 /// Chapter 1, Lagrangian Mechanics
 module Ch1_LagrangianMechanics = 
 
@@ -32,10 +30,11 @@ module Ch1_LagrangianMechanics =
         /// (let ((v (velocity local)))
         /// (* 1/2 mass (dot-product v v))))
         let inline lagrangianFreeParticle (mass : LocalMetric) local = 
-                let v = velocity local // :> (LocalMetric -> LocalMetric) list// :> LocalMetric list
-              //  let v' = v |> List.map (fun f -> f localMetric)
+                let v = 
+                    velocity local
+                    |> List.map (fun x -> LocalMetric.Float x )
+                    
                 (mass * (dotProduct v v)) / 2
-            //fun (time : LocalMetric) -> (mass * (dotProduct (v time) (v time))) / 2
 
         /// (define (path->state-path q #!optional n)
         /// (if (default-object? n)
@@ -57,14 +56,15 @@ module Ch1_LagrangianMechanics =
         let gamma (q : Local ) (time : Time) =
             let coordinate, derivatives =
                 q
-               // |> List.map (fun x -> (UpIndexed.LocalMetric (x time)),  UpIndexed.LocalMetric (derivitave x time))
-                |> List.map (fun x -> UpIndexed.Func1 x,  UpIndexed.LocalMetric (derivitave x)) // time))
+                |> List.map (fun x -> UpIndexed.Func1 x,  wrapFloatFunction (derivitave x) )
                 |> List.unzip
+
+            let d = UpIndexed.UpIndexed derivatives
 
             {
                 Time = UpIndexed.LocalMetric time
                 Local = UpIndexed.UpIndexed coordinate
-                Dt = [UpIndexed.UpIndexed derivatives] 
+                Dt = [d]
             }
 
         /// (define (Lagrangian-action L q t1 t2)

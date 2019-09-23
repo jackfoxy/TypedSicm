@@ -271,17 +271,6 @@ let localMetricToFloat localMetric =
     | Complex x -> x.Real
     | Function x -> 0.
 
-let wrapFloatFunction (f : (float -> float)) =
-    fun (y : LocalMetric) -> 
-        match y with
-        | Int y ->  f (float y) |> Float
-        | Int64 y -> f (float  y) |> Float
-        | BigInt y -> f (float  y) |> Float
-        | Float y -> f y |> Float
-        | Complex y -> f y.Real |> Float
-        | Function y -> f 0. |> Float
-    |> LocalMetric.Function
-
 type Time = LocalMetric
 
 type Func1 = LocalMetric -> LocalMetric
@@ -311,11 +300,22 @@ and DownIndexed =
     | DownIndexed of DownIndexed list
     | UpIndexed of UpIndexed list
 
+let wrapFloatFunction (f : (float -> float)) =
+    fun (y : LocalMetric) -> 
+        match y with
+        | Int y ->  f (float y) |> Float
+        | Int64 y -> f (float  y) |> Float
+        | BigInt y -> f (float  y) |> Float
+        | Float y -> f y |> Float
+        | Complex y -> f y.Real |> Float
+        | Function y -> f 0. |> Float
+    |> UpIndexed.Func1 
+
 type State =
     {
-        Time : UpIndexed              //Time
-        Local : UpIndexed             //Local
-        Dt : UpIndexed list           //(Local -> Time -> LocalMetric list) list
+        Time : UpIndexed      
+        Local : UpIndexed 
+        Dt : UpIndexed list
     }
     with 
         member __.getTime = 
@@ -327,8 +327,7 @@ type State =
                 xs
                 |> List.map (fun x -> 
                     match x with
-                    | UpIndexed.Func1 x' -> x' 
-                    | UpIndexed.LocalMetric x' -> fun _ -> x'      //??? returning then calculated value
+                    | UpIndexed.Func1 x' -> x'
                 )
 
 /// (define (state->qdot state)
@@ -343,16 +342,18 @@ let firstDerivative (state : State) =
         xs
         |> List.map (fun x -> 
             match x with
-            | UpIndexed.Func1 x' -> x' 
-            | UpIndexed.LocalMetric x' -> fun _ -> x'      //??? returning then calculated value
-        //    | _ -> x     //??? returning then calculated value
+            | UpIndexed.Func1 x' -> x'
         )
-    |> List.zip local
-    |> List.map (fun (localFunction, d') -> d' (localFunction time))
 
-let derivitave (f : Func1) = //(time : Time) =
+    |> List.zip local
+    |> List.map (fun (localFunction, d') -> 
+        match (localFunction time) with
+        | LocalMetric.Float n ->
+            (wrapFunc1 d') n
+    )
+
+let derivitave (f : Func1) =
     Differentiate.firstDerivativeFunc (wrapFunc1 f) 
-    |> wrapFloatFunction
 
 let definiteIntegral (f : Func1) start finish =
     let f' : System.Func<float, float> = System.Func<float, float>(wrapFunc1 f)
