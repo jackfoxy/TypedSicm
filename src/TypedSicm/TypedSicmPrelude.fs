@@ -12,7 +12,7 @@ type LocalMetric =
     | Float of float
     | Complex of Complex
     //| Quaternion of Quaternion
-    | Function of (LocalMetric -> LocalMetric)
+    | Func1 of (LocalMetric -> LocalMetric)
    with 
     static member (+) (x, y) = 
         match x, y with
@@ -21,42 +21,42 @@ type LocalMetric =
         | Int x, BigInt y -> BigInt (BigInteger x + y)
         | Int x, Float y -> Float (float x + y)
         | Int x, Complex y -> Complex (new Complex(float x, 0.) + y)
-        | Int x, Function y -> Function (fun z -> (y z) + Int x)
+        | Int x, Func1 y -> Func1 (fun z -> (y z) + Int x)
 
         | Int64 x, Int y -> Int64 (x + int64 y)
         | Int64 x, Int64 y -> Int64 (x + y)
         | Int64 x, BigInt y -> BigInt (BigInteger x + y)
         | Int64 x, Float y -> Float (float x + y)
         | Int64 x, Complex y -> Complex (new Complex(float x, 0.) + y)
-        | Int64 x, Function y -> Function (fun z -> (y z) + Int64 x)
+        | Int64 x, Func1 y -> Func1 (fun z -> (y z) + Int64 x)
 
         | BigInt x, Int y -> BigInt (x + BigInteger y)
         | BigInt x, Int64 y -> BigInt (x + BigInteger y)
         | BigInt x, BigInt y -> BigInt (x + y)
         | BigInt x, Float y -> Float (float x + y)
         | BigInt x, Complex y -> Complex (new Complex(float x, 0.) + y)
-        | BigInt x, Function y -> Function (fun z -> (y z) + BigInt x)
+        | BigInt x, Func1 y -> Func1 (fun z -> (y z) + BigInt x)
 
         | Float x, Int y -> Float (x + float y)
         | Float x, Int64 y -> Float (x + float y)
         | Float x, BigInt y -> Float (x + float y)
         | Float x, Float y -> Float (x + y)
         | Float x, Complex y -> Complex (new Complex(x, 0.) + y)
-        | Float x, Function y -> Function (fun z -> (y z) + Float x)
+        | Float x, Func1 y -> Func1 (fun z -> (y z) + Float x)
 
         | Complex x, Int y -> Complex (x + new Complex(float y, 0.))
         | Complex x, Int64 y -> Complex (x + new Complex(float y, 0.))
         | Complex x, BigInt y -> Complex (x + new Complex(float y, 0.))
         | Complex x, Float y -> Complex (x + new Complex(float y, 0.))
         | Complex x, Complex y -> Complex (x + y)
-        | Complex x, Function y -> Function (fun z -> (y z) + Complex x)
+        | Complex x, Func1 y -> Func1 (fun z -> (y z) + Complex x)
 
-        | Function x, Int _ 
-        | Function x, Int64 _ 
-        | Function x, BigInt _
-        | Function x, Float _
-        | Function x, Complex _ -> Function (x >> (+) y)          
-        | Function x, Function y -> Function (fun z -> (x z) + (y z))
+        | Func1 x, Int _ 
+        | Func1 x, Int64 _ 
+        | Func1 x, BigInt _
+        | Func1 x, Float _
+        | Func1 x, Complex _ -> Func1 (x >> (+) y)          
+        | Func1 x, Func1 y -> Func1 (fun z -> (x z) + (y z))
 
     static member (*) (x, y) = 
         match x, y with
@@ -65,42 +65,42 @@ type LocalMetric =
         | Int x, BigInt y -> BigInt (BigInteger x * y)
         | Int x, Float y -> Float (float x * y)
         | Int x, Complex y -> Complex (new Complex(float x, 0.) * y)
-        | Int x, Function y -> Function (fun z -> (y z) * Int x)
+        | Int x, Func1 y -> Func1 (fun z -> (y z) * Int x)
 
         | Int64 x, Int y -> Int64 (x * int64 y)
         | Int64 x, Int64 y -> Int64 (x * y)
         | Int64 x, BigInt y -> BigInt (BigInteger x * y)
         | Int64 x, Float y -> Float (float x * y)
         | Int64 x, Complex y -> Complex (new Complex(float x, 0.) * y)
-        | Int64 x, Function y -> Function (fun z -> (y z) * Int64 x)
+        | Int64 x, Func1 y -> Func1 (fun z -> (y z) * Int64 x)
 
         | BigInt x, Int y -> BigInt (x * BigInteger y)
         | BigInt x, Int64 y -> BigInt (x * BigInteger y)
         | BigInt x, BigInt y -> BigInt (x * y)
         | BigInt x, Float y -> Float (float x * y)
         | BigInt x, Complex y -> Complex (new Complex(float x, 0.) * y)
-        | BigInt x, Function y -> Function (fun z -> (y z) * BigInt x)
+        | BigInt x, Func1 y -> Func1 (fun z -> (y z) * BigInt x)
 
         | Float x, Int y -> Float (x * float y)
         | Float x, Int64 y -> Float (x * float y)
         | Float x, BigInt y -> Float (x * float y)
         | Float x, Float y -> Float (x * y)
         | Float x, Complex y -> Complex (new Complex(x, 0.) * y)
-        | Float x, Function y -> Function (fun z -> (y z) * Float x)
+        | Float x, Func1 y -> Func1 (fun z -> (y z) * Float x)
 
         | Complex x, Int y -> Complex (x * new Complex(float y, 0.))
         | Complex x, Int64 y -> Complex (x * new Complex(float y, 0.))
         | Complex x, BigInt y -> Complex (x * new Complex(float y, 0.))
         | Complex x, Float y -> Complex (x * new Complex(float y, 0.))
         | Complex x, Complex y -> Complex (x * y)
-        | Complex x, Function y -> Function (fun z -> (y z) * Complex x)
+        | Complex x, Func1 y -> Func1 (fun z -> (y z) * Complex x)
 
-        | Function x, Int _ 
-        | Function x, Int64 _ 
-        | Function x, BigInt _
-        | Function x, Float _
-        | Function x, Complex _ -> Function (x >> (*) y)          
-        | Function x, Function y -> Function (fun z -> (x z) * (y z))
+        | Func1 x, Int _ 
+        | Func1 x, Int64 _ 
+        | Func1 x, BigInt _
+        | Func1 x, Float _
+        | Func1 x, Complex _ -> Func1 (x >> (*) y)          
+        | Func1 x, Func1 y -> Func1 (fun z -> (x z) * (y z))
 
     static member (-) (x, y) = 
         match x, y with
@@ -109,42 +109,42 @@ type LocalMetric =
         | Int x, BigInt y -> BigInt (BigInteger x - y)
         | Int x, Float y -> Float (float x - y)
         | Int x, Complex y -> Complex (new Complex(float x, 0.) - y)
-        | Int x, Function y -> Function (fun z -> (y z) - Int x)
+        | Int x, Func1 y -> Func1 (fun z -> (y z) - Int x)
 
         | Int64 x, Int y -> Int64 (x - int64 y)
         | Int64 x, Int64 y -> Int64 (x - y)
         | Int64 x, BigInt y -> BigInt (BigInteger x - y)
         | Int64 x, Float y -> Float (float x - y)
         | Int64 x, Complex y -> Complex (new Complex(float x, 0.) - y)
-        | Int64 x, Function y -> Function (fun z -> (y z) - Int64 x)
+        | Int64 x, Func1 y -> Func1 (fun z -> (y z) - Int64 x)
 
         | BigInt x, Int y -> BigInt (x - BigInteger y)
         | BigInt x, Int64 y -> BigInt (x - BigInteger y)
         | BigInt x, BigInt y -> BigInt (x - y)
         | BigInt x, Float y -> Float (float x - y)
         | BigInt x, Complex y -> Complex (new Complex(float x, 0.) - y)
-        | BigInt x, Function y -> Function (fun z -> (y z) - BigInt x)
+        | BigInt x, Func1 y -> Func1 (fun z -> (y z) - BigInt x)
 
         | Float x, Int y -> Float (x - float y)
         | Float x, Int64 y -> Float (x - float y)
         | Float x, BigInt y -> Float (x - float y)
         | Float x, Float y -> Float (x - y)
         | Float x, Complex y -> Complex (new Complex(x, 0.) - y)
-        | Float x, Function y -> Function (fun z -> (y z) - Float x)
+        | Float x, Func1 y -> Func1 (fun z -> (y z) - Float x)
 
         | Complex x, Int y -> Complex (x - new Complex(float y, 0.))
         | Complex x, Int64 y -> Complex (x - new Complex(float y, 0.))
         | Complex x, BigInt y -> Complex (x - new Complex(float y, 0.))
         | Complex x, Float y -> Complex (x - new Complex(float y, 0.))
         | Complex x, Complex y -> Complex (x - y)
-        | Complex x, Function y -> Function (fun z -> (y z) - Complex x)
+        | Complex x, Func1 y -> Func1 (fun z -> (y z) - Complex x)
 
-        | Function x, Int _ 
-        | Function x, Int64 _ 
-        | Function x, BigInt _
-        | Function x, Float _
-        | Function x, Complex _ -> Function (fun z -> (x z) - y)       
-        | Function x, Function y -> Function (fun z -> (x z) - (y z))
+        | Func1 x, Int _ 
+        | Func1 x, Int64 _ 
+        | Func1 x, BigInt _
+        | Func1 x, Float _
+        | Func1 x, Complex _ -> Func1 (fun z -> (x z) - y)       
+        | Func1 x, Func1 y -> Func1 (fun z -> (x z) - (y z))
 
     static member (/) (x, y) = 
         match x, y with
@@ -153,42 +153,42 @@ type LocalMetric =
         | Int x, BigInt y -> BigInt (BigInteger x / y)
         | Int x, Float y -> Float (float x / y)
         | Int x, Complex y -> Complex (new Complex(float x, 0.) / y)
-        | Int x, Function y -> Function (fun z -> (y z) / Int x)
+        | Int x, Func1 y -> Func1 (fun z -> (y z) / Int x)
 
         | Int64 x, Int y -> Int64 (x / int64 y)
         | Int64 x, Int64 y -> Int64 (x / y)
         | Int64 x, BigInt y -> BigInt (BigInteger x / y)
         | Int64 x, Float y -> Float (float x / y)
         | Int64 x, Complex y -> Complex (new Complex(float x, 0.) / y)
-        | Int64 x, Function y -> Function (fun z -> (y z) / Int64 x)
+        | Int64 x, Func1 y -> Func1 (fun z -> (y z) / Int64 x)
 
         | BigInt x, Int y -> BigInt (x / BigInteger y)
         | BigInt x, Int64 y -> BigInt (x / BigInteger y)
         | BigInt x, BigInt y -> BigInt (x / y)
         | BigInt x, Float y -> Float (float x / y)
         | BigInt x, Complex y -> Complex (new Complex(float x, 0.) / y)
-        | BigInt x, Function y -> Function (fun z -> (y z) / BigInt x)
+        | BigInt x, Func1 y -> Func1 (fun z -> (y z) / BigInt x)
 
         | Float x, Int y -> Float (x / float y)
         | Float x, Int64 y -> Float (x / float y)
         | Float x, BigInt y -> Float (x / float y)
         | Float x, Float y -> Float (x / y)
         | Float x, Complex y -> Complex (new Complex(x, 0.) / y)
-        | Float x, Function y -> Function (fun z -> (y z) / Float x)
+        | Float x, Func1 y -> Func1 (fun z -> (y z) / Float x)
 
         | Complex x, Int y -> Complex (x / new Complex(float y, 0.))
         | Complex x, Int64 y -> Complex (x / new Complex(float y, 0.))
         | Complex x, BigInt y -> Complex (x / new Complex(float y, 0.))
         | Complex x, Float y -> Complex (x / new Complex(float y, 0.))
         | Complex x, Complex y -> Complex (x / y)
-        | Complex x, Function y -> Function (fun z -> (y z) / Complex x)
+        | Complex x, Func1 y -> Func1 (fun z -> (y z) / Complex x)
 
-        | Function x, Int _ 
-        | Function x, Int64 _ 
-        | Function x, BigInt _
-        | Function x, Float _
-        | Function x, Complex _ -> Function (fun z -> (x z) / y)            
-        | Function x, Function y -> Function (fun z -> (x z) / (y z))
+        | Func1 x, Int _ 
+        | Func1 x, Int64 _ 
+        | Func1 x, BigInt _
+        | Func1 x, Float _
+        | Func1 x, Complex _ -> Func1 (fun z -> (x z) / y)            
+        | Func1 x, Func1 y -> Func1 (fun z -> (x z) / (y z))
 
     static member (+) (x, (y : int)) = 
         match x with
@@ -197,7 +197,7 @@ type LocalMetric =
         | BigInt x -> BigInt (x + BigInteger y)
         | Float x -> Float (x + float y)
         | Complex x -> Complex (x + new Complex(float y, 0.))
-        | Function x -> Function (fun z -> (x z) + y)
+        | Func1 x -> Func1 (fun z -> (x z) + y)
         
     static member (+) ((x : int), y) = 
         match y with
@@ -206,7 +206,7 @@ type LocalMetric =
         | BigInt y -> BigInt (BigInteger x + y)
         | Float y -> Float (float x + y)
         | Complex y -> Complex (new Complex(float x, 0.) + y)
-        | Function y -> Function (fun z -> (y z) + x)
+        | Func1 y -> Func1 (fun z -> (y z) + x)
 
     static member (*) (x, (y : int)) = 
         match x with
@@ -215,7 +215,7 @@ type LocalMetric =
         | BigInt x -> BigInt (x * BigInteger y)
         | Float x -> Float (x * float y)
         | Complex x -> Complex (x * new Complex(float y, 0.))
-        | Function x -> Function (fun z -> (x z) * y)
+        | Func1 x -> Func1 (fun z -> (x z) * y)
         
     static member (*) ((x : int), y) = 
         match y with
@@ -224,7 +224,7 @@ type LocalMetric =
         | BigInt y -> BigInt (BigInteger x * y)
         | Float y -> Float (float x * y)
         | Complex y -> Complex (new Complex(float x, 0.) * y)
-        | Function y -> Function (fun z -> (y z) * x)
+        | Func1 y -> Func1 (fun z -> (y z) * x)
 
     static member (-) (x, (y : int)) = 
         match x with
@@ -233,7 +233,7 @@ type LocalMetric =
         | BigInt x -> BigInt (x - BigInteger y)
         | Float x -> Float (x - float y)
         | Complex x -> Complex (x - new Complex(float y, 0.))
-        | Function x -> Function (fun z -> (x z) - y)
+        | Func1 x -> Func1 (fun z -> (x z) - y)
         
     static member (-) ((x : int), y) = 
         match y with
@@ -242,7 +242,7 @@ type LocalMetric =
         | BigInt y -> BigInt (BigInteger x - y)
         | Float y -> Float (float x - y)
         | Complex y -> Complex (new Complex(float x, 0.) - y)
-        | Function y -> Function (fun z -> x - (y z))
+        | Func1 y -> Func1 (fun z -> x - (y z))
 
     static member (/) (x, (y : int)) = 
         match x with
@@ -251,7 +251,7 @@ type LocalMetric =
         | BigInt x -> BigInt (x / BigInteger y)
         | Float x -> Float (x / float y)
         | Complex x -> Complex (x / new Complex(float y, 0.))
-        | Function x -> Function (fun z -> (x z) / y)
+        | Func1 x -> Func1 (fun z -> (x z) / y)
         
     static member (/) ((x : int), y) = 
         match y with
@@ -260,34 +260,13 @@ type LocalMetric =
         | BigInt y -> BigInt (BigInteger x / y)
         | Float y -> Float (float x / y)
         | Complex y -> Complex (new Complex(float x, 0.) / y)
-        | Function y -> Function (fun z -> x / (y z))
-    
-let localMetricToFloat localMetric =
-    match localMetric with
-    | Int x -> float x
-    | Int64 x -> float x
-    | BigInt x -> float x
-    | Float x -> x
-    | Complex x -> x.Real
-    | Function x -> 0.
+        | Func1 y -> Func1 (fun z -> x / (y z))
 
-type Time = LocalMetric
+and Time = LocalMetric
 
-type Func1 = LocalMetric -> LocalMetric
+and Func1 = LocalMetric -> LocalMetric
 
-let wrapFunc1 (f : Func1) =
-    (fun (y : float) -> 
-        match (f (Float y)) with
-        | Int z -> float z
-        | Int64 z -> float z
-        | BigInt z -> float z
-        | Float z -> z
-        | Complex z -> z.Real
-        | Function _ -> 0. ) 
-
-type Local = Func1 list
-
-type UpIndexed =
+and UpIndexed =
     | LocalMetric of LocalMetric
     | Func1 of Func1
     | Func2 of (Func1 -> Time -> LocalMetric)
@@ -299,6 +278,47 @@ and DownIndexed =
     | Func2 of (Func1 -> Time -> LocalMetric)
     | DownIndexed of DownIndexed list
     | UpIndexed of UpIndexed list
+    
+let localMetricToFloat localMetric =
+    match localMetric with
+    | Int x -> float x
+    | Int64 x -> float x
+    | BigInt x -> float x
+    | Float x -> x
+    | Complex x -> x.Real
+    | LocalMetric.Func1 x -> 0.
+
+    
+let inline complexToLocal  c = LocalMetric.Complex c
+let inline intToLocal i = LocalMetric.Int
+let inline int64ToLocal i = LocalMetric.Int64 i
+let inline floatToLocal f = LocalMetric.Float f
+//let inline floatToFunc1 f =  
+//    fun x -> 
+//let inline FunctionToLocal  ( : ) = LocalMetric. 
+//let inline ToLocal  ( : ) = LocalMetric. 
+   // function
+    //match x with
+    //| :? Complex as c -> 
+    //| :? int as i -> LocalMetric.Int i
+    //| Int64 of int64
+    //| BigInt of BigInteger
+    //| Float of float
+    //| Complex of Complex
+    ////| Quaternion of Quaternion
+    //| Function of (LocalMetric -> LocalMetric)
+
+let inline floatToTime f = LocalMetric.Float f :> Time
+
+let wrapFunc1 (f : Func1) =
+    (fun (y : float) -> 
+        match (f (Float y)) with
+        | Int z -> float z
+        | Int64 z -> float z
+        | BigInt z -> float z
+        | Float z -> z
+        | Complex z -> z.Real
+        | LocalMetric.Func1 _ -> 0. ) 
 
 let wrapFloatFunction (f : (float -> float)) =
     fun (y : LocalMetric) -> 
@@ -308,13 +328,20 @@ let wrapFloatFunction (f : (float -> float)) =
         | BigInt y -> f (float  y) |> Float
         | Float y -> f y |> Float
         | Complex y -> f y.Real |> Float
-        | Function y -> f 0. |> Float
+        | LocalMetric.Func1 y -> f 0. |> Float
     |> UpIndexed.Func1 
+
+let ffToFuncUp (f : float -> float) =
+    (fun f' ->
+        match f' with
+        | LocalMetric.Float n -> (f n) |> LocalMetric.Float 
+        | _ -> invalidArg "" "" )
+        |> UpIndexed.Func1
 
 type State =
     {
         Time : UpIndexed      
-        Local : UpIndexed 
+        Local : UpIndexed list
         Dt : UpIndexed list
     }
     with 
@@ -322,9 +349,9 @@ type State =
             match __.Time with
             | UpIndexed.LocalMetric x ->  x //:> Time
         member __.getLocal =
-            match __.Local with
-            | UpIndexed.UpIndexed xs ->  
-                xs
+            //match __.Local with
+            //| UpIndexed xs ->  
+                __.Local
                 |> List.map (fun x -> 
                     match x with
                     | UpIndexed.Func1 x' -> x'

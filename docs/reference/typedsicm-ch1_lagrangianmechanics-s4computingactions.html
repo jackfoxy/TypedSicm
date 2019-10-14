@@ -58,11 +58,11 @@
             gamma q time
           </code>
           <div class="tip" id="3">
-            <strong>Signature:</strong> q:Local -&gt; time:Time -&gt; State<br />
+            <strong>Signature:</strong> q:UpIndexed -&gt; time:Time -&gt; State<br />
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L56-56" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L58-58" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -92,11 +92,11 @@
             lagrangianAction(...)
           </code>
           <div class="tip" id="4">
-            <strong>Signature:</strong> lagrangian:(State -&gt; LocalMetric) -&gt; path:Local -&gt; time1:float -&gt; time2:float -&gt; float<br />
+            <strong>Signature:</strong> lagrangian:(State -&gt; LocalMetric) -&gt; path:UpIndexed -&gt; time1:Time -&gt; time2:Time -&gt; float<br />
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L72-72" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L80-80" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -117,7 +117,7 @@
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L32-32" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L34-34" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -132,14 +132,55 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
-            test()
+            makeEta nu time1 time2 t
           </code>
           <div class="tip" id="6">
+            <strong>Signature:</strong> nu:UpIndexed -&gt; time1:Time -&gt; time2:Time -&gt; t:LocalMetric -&gt; LocalMetric<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L107-107" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>(define ((make-eta nu t1 t2) t)
+(* (- t t1) (- t t2) (nu t)))</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
+            nu
+          </code>
+          <div class="tip" id="7">
+            <strong>Signature:</strong> UpIndexed<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L141-141" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>(up sin cos square)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8', 8)" onmouseover="showTip(event, '8', 8)">
+            test1()
+          </code>
+          <div class="tip" id="8">
             <strong>Signature:</strong> unit -&gt; float<br />
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L93-93" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L103-103" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -149,15 +190,33 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
-            testPath
+          <code onmouseout="hideTip(event, '9', 9)" onmouseover="showTip(event, '9', 9)">
+            test2()
           </code>
-          <div class="tip" id="7">
-            <strong>Signature:</strong> Local<br />
+          <div class="tip" id="9">
+            <strong>Signature:</strong> unit -&gt; float<br />
                                   </div>
         </td>
         <td class="xmldoc">
-                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L83-83" class="github-link">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L149-149" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '10', 10)" onmouseover="showTip(event, '10', 10)">
+            testPath
+          </code>
+          <div class="tip" id="10">
+            <strong>Signature:</strong> UpIndexed<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L92-92" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -165,6 +224,31 @@
 (up (+ (<em> 4 t) 7)
 (+ (</em> 3 t) 5)
 (+ (* 2 t) 1)))</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '11', 11)" onmouseover="showTip(event, '11', 11)">
+            variedlagrangianAction(...)
+          </code>
+          <div class="tip" id="11">
+            <strong>Signature:</strong> mass:LocalMetric -&gt; q:UpIndexed -&gt; nu:UpIndexed -&gt; time1:Time -&gt; time2:Time -&gt; eps:LocalMetric -&gt; float<br />
+                                  </div>
+        </td>
+        <td class="xmldoc">
+                      <a href="https://github.com/jackfoxy/TypedSicm/tree/master/src/TypedSicm/Ch1LagrangianMechanics.fs#L129-129" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>(define ((varied-free-particle-action mass q nu t1 t2) eps)
+(let ((eta (make-eta nu t1 t2)))
+(Lagrangian-action (L-free-particle mass)
+(+ q (* eps eta))
+t1
+t2)))</p>
 
 
         </td>

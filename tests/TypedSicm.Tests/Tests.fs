@@ -14,10 +14,14 @@ module Tests =
     [<Tests>]
     let testSimpleTests =
         
-        testList "DomainTypes.Tag" [
-            testCase "equality" <| fun () ->
-                let result = Ch1_LagrangianMechanics.S4ComputingActions.test()
+        testList "Ch1_LagrangianMechanics" [
+            testCase "S4 Computing Actions" <| fun () ->
+                let result = Ch1_LagrangianMechanics.S4ComputingActions.test1()
                 Expect.floatClose Accuracy.high result 435. "Expected 435"
+
+            testCase "varied minimum action" <| fun () ->
+                let result = Ch1_LagrangianMechanics.S4ComputingActions.test2()
+                Expect.floatClose Accuracy.high result 436.29 "Expected 436.29"
 
             //testPropertyWithConfig config10k "whitespace" <|
             //    fun  () ->

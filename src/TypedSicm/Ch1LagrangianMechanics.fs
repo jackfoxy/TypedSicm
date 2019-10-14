@@ -1,5 +1,7 @@
 namespace TypedSicm
 
+open System
+
 /// Chapter 1, Lagrangian Mechanics
 module Ch1_LagrangianMechanics = 
 
@@ -53,42 +55,96 @@ module Ch1_LagrangianMechanics =
         ///
         /// (define Gamma path->state-path)
         //let inline gamma (q : UpIndexed list ) (time : Time) =
-        let gamma (q : Local ) (time : Time) =
+        let gamma (q : UpIndexed) (time : Time) =
             let coordinate, derivatives =
-                q
-                |> List.map (fun x -> UpIndexed.Func1 x,  wrapFloatFunction (derivitave x) )
-                |> List.unzip
+                match q with 
+                | UpIndexed.UpIndexed q' ->
+                    q'
+                    |> List.map (fun x -> 
+                        match x with
+                        | UpIndexed.Func1 x' ->
+                            x,  wrapFloatFunction (derivitave x') 
+                    )
+                    |> List.unzip
 
             let d = UpIndexed.UpIndexed derivatives
 
             {
                 Time = UpIndexed.LocalMetric time
-                Local = UpIndexed.UpIndexed coordinate
+                Local = coordinate
                 Dt = [d]
             }
 
         /// (define (Lagrangian-action L q t1 t2)
         ///     (definite-integral (compose L (Gamma q)) t1 t2))
-        let lagrangianAction (lagrangian : State -> LocalMetric) path time1 time2 =
+        let lagrangianAction (lagrangian : State -> LocalMetric) path (time1 : Time) (time2 : Time) =
             let f =
                 fun time ->
                     lagrangian (gamma path time) 
                 |> definiteIntegral
-            f time1 time2
+                //|> floatToLocal
+            f (localMetricToFloat time1) (localMetricToFloat time2)
 
         /// (define (test-path t)
         ///     (up (+ (* 4 t) 7)
         ///         (+ (* 3 t) 5)
         ///         (+ (* 2 t) 1)))
-        let testPath : Local  =
-            [
-                //fun (time : Time) -> 4 * time + 7
-                //fun (time : Time) -> 3 * time + 5
-                //fun (time : Time) -> 2 * time + 1
-                fun (time : Time) -> 4. * (localMetricToFloat time) + 7. |> Float
-                fun (time : Time) -> 3. * (localMetricToFloat time) + 5. |> Float
-                fun (time : Time) -> 2. * (localMetricToFloat time) + 1. |> Float
-            ]
+        let testPath =
+            UpIndexed.UpIndexed
+                [
+                    UpIndexed.Func1 (fun (time : Time) -> 4 * time + 7)
+                    UpIndexed.Func1 (fun (time : Time) -> 3 * time + 5)
+                    UpIndexed.Func1 (fun (time : Time) -> 2 * time + 1)
+                    //fun (time : Time) -> 4. * (localMetricToFloat time) + 7. |> Float
+                    //fun (time : Time) -> 3. * (localMetricToFloat time) + 5. |> Float
+                    //fun (time : Time) -> 2. * (localMetricToFloat time) + 1. |> Float
+                ]
 
-        let test () = lagrangianAction (lagrangianFreeParticle (LocalMetric.Int 3)) testPath 0. 10.
+        let test1 () = lagrangianAction (lagrangianFreeParticle (LocalMetric.Int 3)) testPath (floatToTime 0.) (floatToTime 10.)
         
+        /// (define ((make-eta nu t1 t2) t)
+        ///     (* (- t t1) (- t t2) (nu t)))
+        let makeEta (nu : UpIndexed) (time1 : Time) (time2 : Time) (t : LocalMetric) =
+            match nu with
+            | UpIndexed.Func1 nu ->
+                (t - time1) * (t - time2) * (nu t)
+
+
+            //match nu with
+            //           | UpIndexed.UpIndexed nu ->
+            //               let nu' =
+            //                   nu
+            //                   |> List.map (fun x -> 
+            //                       match x with
+            //                       | UpIndexed.Func1 x' -> LocalMetric.Func1 x'
+            //                   )
+
+
+        /// (define ((varied-free-particle-action mass q nu t1 t2) eps)
+        ///     (let ((eta (make-eta nu t1 t2)))
+        ///         (Lagrangian-action (L-free-particle mass)
+        ///                            (+ q (* eps eta))
+        ///                            t1
+        ///                            t2)))
+        let inline variedlagrangianAction mass (q : UpIndexed) nu time1 time2 (eps : LocalMetric) =
+            let eta = makeEta nu time1 time2 |> LocalMetric.Func1
+
+            match q with
+            | UpIndexed.LocalMetric q' ->
+                let v =
+                    q' + (eps * eta)
+                    |> UpIndexed.LocalMetric
+
+                lagrangianAction (lagrangianFreeParticle mass) v time1 time2
+        
+        ///(up sin cos square)
+        let nu =
+            UpIndexed.UpIndexed 
+                [
+                    ffToFuncUp Math.Sin
+                    ffToFuncUp Math.Cos
+                    ffToFuncUp (fun x -> x * x)
+                ]
+
+        let test2 () = variedlagrangianAction (LocalMetric.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) 
+                                                                                            (LocalMetric.Float 0.001)
