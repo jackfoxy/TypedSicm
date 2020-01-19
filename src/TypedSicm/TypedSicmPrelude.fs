@@ -321,13 +321,6 @@ let wrapScalarFunction (f : (Scalar -> Scalar)) =
     fun (y : float) -> 
         f (Float y)
         |> scalarToFloat
-        //match (f (Float y)) with
-        //| Int z -> float z
-        //| Int64 z -> float z
-        //| BigInt z -> float z
-        //| Float z -> z
-        //| Complex z -> z.Real
-        //| Func1 _ -> invalidArg "" ""
 
 let wrapFloatFunction (f : (float -> float)) =
     fun (y : Scalar) -> 
