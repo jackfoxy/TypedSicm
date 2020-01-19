@@ -60,7 +60,7 @@ module Ch1_LagrangianMechanics =
     ///           (g:+ ans
     ///            (g:* (vector-ref v1 i)
     ///             (vector-ref v2 i))))))))
-    let inline dotProduct (vector1 : Scalar [])  (vector2 : Scalar [])  =
+    let dotProduct (vector1 : Scalar [])  (vector2 : Scalar [])  =
         vector1
         |> Array.zip vector2
         |> Array.map (fun (v1, v2) -> v1 * v2)
@@ -73,7 +73,7 @@ module Ch1_LagrangianMechanics =
         let lagrangianFreeParticle (mass : Scalar) local = 
             let v = 
                 velocity local
-                |> Array.map (fun x -> Scalar.Func1 x)
+                |> Array.map (fun f ->  f local.Time)
                     
             (mass * (dotProduct v v)) / 2
 
@@ -118,7 +118,7 @@ module Ch1_LagrangianMechanics =
             let eta = makeEta nu time1 time2
             lagrangianAction 
                 (lagrangianFreeParticle mass) 
-                (addUp q (eps * eta)) 
+                (addUp q (eps * eta))
                 time1 
                 time2
        

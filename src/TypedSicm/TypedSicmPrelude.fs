@@ -10,17 +10,13 @@ open System
 open System.Numerics
 open MathNet.Numerics
 
-//[<DefaultAugmentation(false)>]
-//[<StructuralEquality>]
-//[<StructuralComparison>]
-
 type Scalar =
     | Int of int
     | Int64 of int64
     | BigInt of BigInteger
     | Float of float
     | Complex of Complex
-    //| Quaternion of Quaternion
+   // | Quaternion of Quaternion
     | Func1 of (Scalar -> Scalar)
    with 
 
@@ -307,29 +303,31 @@ let scalarToFloat scalar =
      | BigInt x -> float x
      | Float x -> x
      | Complex x -> x.Real
-     | Scalar.Func1 x -> invalidArg "" ""
+     | Func1 _ -> invalidArg "" ""
 
+/// cannot coerce (+) operator on UpIndexed, UpIndexed
 let addUp (ys : UpIndexed) (xs : UpIndexed) : UpIndexed = 
     xs
     |> Array.zip ys
     |> Array.map (fun (x, y) -> 
         match Scalar.Func1 x + Scalar.Func1 y with
-        | Scalar.Func1 z ->
-            z
+        | Func1 z -> z
         | _ -> invalidArg "" "can't get here"  
     )
 
 let inline floatToTime f : Time = Scalar.Float f
 
-let wrapFunc1 (f : (Scalar -> Scalar)) =
-    (fun (y : float) -> 
-        match (f (Float y)) with
-        | Int z -> float z
-        | Int64 z -> float z
-        | BigInt z -> float z
-        | Float z -> z
-        | Complex z -> z.Real
-        | Scalar.Func1 _ -> 0. ) 
+let wrapScalarFunction (f : (Scalar -> Scalar)) =
+    fun (y : float) -> 
+        f (Float y)
+        |> scalarToFloat
+        //match (f (Float y)) with
+        //| Int z -> float z
+        //| Int64 z -> float z
+        //| BigInt z -> float z
+        //| Float z -> z
+        //| Complex z -> z.Real
+        //| Func1 _ -> invalidArg "" ""
 
 let wrapFloatFunction (f : (float -> float)) =
     fun (y : Scalar) -> 
@@ -339,14 +337,14 @@ let wrapFloatFunction (f : (float -> float)) =
         | BigInt y -> f (float  y) |> Scalar.Float
         | Float y -> f y |> Scalar.Float 
         | Complex y -> f y.Real |> Scalar.Float 
-        | _ -> invalidArg "" ""
+        | Func1 _ -> invalidArg "" ""
 
 // to do: look at http://diffsharp.github.io/DiffSharp/index.html
 let derivitave (f : (Scalar -> Scalar)) =
-    Differentiate.firstDerivativeFunc (wrapFunc1 f) 
+    Differentiate.firstDerivativeFunc (wrapScalarFunction f) 
     |> wrapFloatFunction
 
 let definiteIntegral (f : (Scalar -> Scalar)) start finish =
-    let f' : System.Func<float, float> = System.Func<float, float>(wrapFunc1 f)
+    let f' : System.Func<float, float> = System.Func<float, float>(wrapScalarFunction f)
     Integrate.OnClosedInterval(f', start, finish)
     
