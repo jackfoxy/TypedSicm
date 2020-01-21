@@ -333,7 +333,7 @@ let wrapFloatFunction (f : (float -> float)) =
         | Func1 _ -> invalidArg "" ""
 
 // to do: look at http://diffsharp.github.io/DiffSharp/index.html
-let derivitave (f : (Scalar -> Scalar)) =
+let derivative (f : (Scalar -> Scalar)) =
     Differentiate.firstDerivativeFunc (wrapScalarFunction f) 
     |> wrapFloatFunction
 
