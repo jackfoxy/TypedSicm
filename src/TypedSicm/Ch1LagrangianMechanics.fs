@@ -1,6 +1,7 @@
 namespace TypedSicm
 
 open System
+open Utilities
 
 /// Chapter 1, Lagrangian Mechanics
 module Ch1_LagrangianMechanics =
@@ -132,3 +133,10 @@ module Ch1_LagrangianMechanics =
 
         let test2 () = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) 
                                                                                             (Scalar.Float 0.001)
+
+        let test3 () = 
+            let vFPA = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.)
+            let vFPA' =
+                fun (x : float) ->
+                    vFPA (Scalar.Float x)
+            minimize vFPA' -2.0 1.
