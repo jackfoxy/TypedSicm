@@ -23,6 +23,19 @@ module console1 =
         printfn "test1: %f" <| S4ComputingActions.test1()
         printfn "test2: %f" <| S4ComputingActions.test2()
 
+        let machineEpsilon =
+            let rec loop e =
+                if 1.0 = (e + 1.0) then
+                    2.0 * e
+                else
+                        loop (e / 2.0)
+
+            loop 1.0
+
+        printfn "machine epsilon: %s" <| machineEpsilon.ToString()
+
+        printfn "test3: %A" <| S4ComputingActions.test3()
+
         printfn "Hit any key to exit."
         System.Console.ReadKey() |> ignore
         0
