@@ -316,7 +316,6 @@ let addUp (ys : UpIndexed) (xs : UpIndexed) : UpIndexed =
     )
 
 let inline floatToTime t : Time = Scalar.Float t
-let inline timeToFloat t = match t with | Scalar.Float t' -> t' | _ -> invalidArg "timeToFloat" ""
 
 let wrapScalarFunction (f : (Scalar -> Scalar)) =
     fun (y : float) -> 

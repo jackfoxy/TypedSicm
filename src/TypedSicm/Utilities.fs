@@ -281,9 +281,9 @@ let lagrangeInterpolation (ys : float list) (xs : float list) =
 ///        (append (list q0) qs (list q1))
 ///        (append (list t0) ts (list t1))))))
 let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : Scalar list) =
-    let t0 = timeToFloat t0
-    let t1 = timeToFloat t1
-    let qs = qs |> List.map timeToFloat
+    let t0 = scalarToFloat t0
+    let t1 = scalarToFloat t1
+    let qs = qs |> List.map scalarToFloat
 
     let ts = linearInterpolants t0 t1 qs.Length
     [|
