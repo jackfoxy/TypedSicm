@@ -10,6 +10,7 @@
     <Compile Include="Prelude.fs" />
     <Compile Include="TypedSicmPrelude.fs" />
     <Compile Include="Utilities.fs" />
+    <Compile Include="NelderMead.fs" />
     <Compile Include="Ch1LagrangianMechanics.fs" />
     <Compile Include="UOM.fs" />
     <None Include="Scripts/Script.fsx" />

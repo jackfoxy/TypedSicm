@@ -315,7 +315,8 @@ let addUp (ys : UpIndexed) (xs : UpIndexed) : UpIndexed =
         | _ -> invalidArg "" "can't get here"  
     )
 
-let inline floatToTime f : Time = Scalar.Float f
+let inline floatToTime t : Time = Scalar.Float t
+let inline timeToFloat t = match t with | Scalar.Float t' -> t' | _ -> invalidArg "timeToFloat" ""
 
 let wrapScalarFunction (f : (Scalar -> Scalar)) =
     fun (y : float) -> 
@@ -340,4 +341,3 @@ let derivitave (f : (Scalar -> Scalar)) =
 let definiteIntegral (f : (Scalar -> Scalar)) start finish =
     let f' : System.Func<float, float> = System.Func<float, float>(wrapScalarFunction f)
     Integrate.OnClosedInterval(f', start, finish)
-    

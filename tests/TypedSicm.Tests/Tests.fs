@@ -21,7 +21,7 @@ module Tests =
 
             testCase "varied minimum action" <| fun () ->
                 let result = Ch1_LagrangianMechanics.S4ComputingActions.test2()
-                Expect.floatClose Accuracy.high result 436.29 "Expected 436.29"
+                Expect.floatClose Accuracy.medium result 436.29 "Expected 436.29"
 
             //testPropertyWithConfig config10k "whitespace" <|
             //    fun  () ->

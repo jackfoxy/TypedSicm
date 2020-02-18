@@ -13,7 +13,7 @@ let machineEpsilon =
         if 1.0 = (e + 1.0) then
             2.0 * e
         else
-                loop (e / 2.0)
+            loop (e / 2.0)
 
     loop 1.0
 
@@ -32,64 +32,64 @@ type MinimizeResult =
 /// 
 /// (define (brent-min f a b eps)
 ///   (let ((a (min a b)) (b (max a b))
-/// 	(maxcount 100)
-/// 	(small-bugger-factor *sqrt-machine-epsilon*)
-/// 	(g (/ (- 3 (sqrt 5)) 2))
-/// 	(d 0) (e 0) (old-e 0) (p 0) (q 0) (u 0) (fu 0))
+///     (maxcount 100)
+///     (small-bugger-factor *sqrt-machine-epsilon*)
+///     (g (/ (- 3 (sqrt 5)) 2))
+///     (d 0) (e 0) (old-e 0) (p 0) (q 0) (u 0) (fu 0))
 ///     (let* ((x (+ a (* g (- b a))))
-/// 	   (fx (f x))
-/// 	   (w x) (fw fx) (v x) (fv fx))
+///        (fx (f x))
+///        (w x) (fw fx) (v x) (fv fx))
 ///       (let loop ((count 0))
-/// 	(if (> count maxcount)
-/// 	    (list 'maxcount x fx count) ;failed to converge
-/// 	    (let* ((tol (+ (* eps (abs x)) small-bugger-factor))
-/// 		   (2tol (* 2 tol))
-/// 		   (m (/ (+ a b) 2)))
-/// 	      ;; test for convergence
-/// 	      (if (< (max (- x a) (- b x)) 2tol)
-/// 		  (list x fx count)
-/// 		  (begin
-/// 		    (if (> (abs e) tol)
-/// 			(let* ((t1 (* (- x w) (- fx fv)))
-/// 			       (t2 (* (- x v) (- fx fw)))
-/// 			       (t3 (- (* (- x v) t2) (* (- x w) t1)))
-/// 			       (t4 (* 2 (- t2 t1))))
-/// 			  (set! p (if (positive? t4) (- t3) t3))
-/// 			  (set! q (abs t4))
-/// 			  (set! old-e e)
-/// 			  (set! e d)))
-/// 		    (if (and (< (abs p) (abs (* 0.5 q old-e)))
-/// 			     (> p (* q (- a x)))
-/// 			     (< p (* q (- b x))))
-/// 			;; parabolic step
-/// 			(begin (set! d (/ p q))
-/// 			       (set! u (+ x d))
-/// 			       (if (< (min (- u a) (- b u)) 2tol)
-/// 				   (set! d (if (< x m) tol (- tol)))))
-/// 			;;else, golden section step
-/// 			(begin (set! e (if (< x m) (- b x) (- a x)))
-/// 			       (set! d (* g e))))
-/// 		    (set! u (+ x (if (> (abs d) tol) 
-/// 				     d
-/// 				     (if (positive? d) tol (- tol)))))
-/// 		    (set! fu (f u))
-/// 		    (if (<= fu fx)
-/// 			(begin (if (< u x) (set! b x) (set! a x))
-/// 			       (set! v w) (set! fv fw)
-/// 			       (set! w x) (set! fw fx)
-/// 			       (set! x u) (set! fx fu))
-/// 			(begin (if (< u x) (set! a u) (set! b u))
-/// 			       (if (or (<= fu fw) (= w x))
-/// 				   (begin (set! v w) (set! fv fw)
-/// 					  (set! w u) (set! fw fu))
-/// 				   (if (or (<= fu fv) (= v x) (= v w))
-/// 				       (begin (set! v u) (set! fv fu))))))
-/// 		    (loop (+ count 1))))))))))
-let brentMin f (a : float) b eps =
-    let mutable a = Math.Min(a, b)
-    let mutable b = Math.Max(a, b)
+///     (if (> count maxcount)
+///         (list 'maxcount x fx count) ;failed to converge
+///         (let* ((tol (+ (* eps (abs x)) small-bugger-factor))
+///            (2tol (* 2 tol))
+///            (m (/ (+ a b) 2)))
+///           ;; test for convergence
+///           (if (< (max (- x a) (- b x)) 2tol)
+///           (list x fx count)
+///           (begin
+///             (if (> (abs e) tol)
+///             (let* ((t1 (* (- x w) (- fx fv)))
+///                    (t2 (* (- x v) (- fx fw)))
+///                    (t3 (- (* (- x v) t2) (* (- x w) t1)))
+///                    (t4 (* 2 (- t2 t1))))
+///               (set! p (if (positive? t4) (- t3) t3))
+///               (set! q (abs t4))
+///               (set! old-e e)
+///               (set! e d)))
+///             (if (and (< (abs p) (abs (* 0.5 q old-e)))
+///                  (> p (* q (- a x)))
+///                  (< p (* q (- b x))))
+///             ;; parabolic step
+///             (begin (set! d (/ p q))
+///                    (set! u (+ x d))
+///                    (if (< (min (- u a) (- b u)) 2tol)
+///                    (set! d (if (< x m) tol (- tol)))))
+///             ;;else, golden section step
+///             (begin (set! e (if (< x m) (- b x) (- a x)))
+///                    (set! d (* g e))))
+///             (set! u (+ x (if (> (abs d) tol) 
+///                      d
+///                      (if (positive? d) tol (- tol)))))
+///             (set! fu (f u))
+///             (if (<= fu fx)
+///             (begin (if (< u x) (set! b x) (set! a x))
+///                    (set! v w) (set! fv fw)
+///                    (set! w x) (set! fw fx)
+///                    (set! x u) (set! fx fu))
+///             (begin (if (< u x) (set! a u) (set! b u))
+///                    (if (or (<= fu fw) (= w x))
+///                    (begin (set! v w) (set! fv fw)
+///                       (set! w u) (set! fw fu))
+///                    (if (or (<= fu fv) (= v x) (= v w))
+///                        (begin (set! v u) (set! fv fu))))))
+///             (loop (+ count 1))))))))))
+let brentMin f (a' : float) b' eps =
+    let mutable a = Math.Min(a', b')
+    let mutable b = Math.Max(a', b')
     let maxcount = 100
-    let smallBuggerFactor = Math.Sqrt(2.220446049250313e-016) //why bother with *machine-epsilon*, it will SO in FSI
+    let smallBuggerFactor = Math.Sqrt(machineEpsilon)
     let g = (3. - Math.Sqrt(5.)) / 2.
 
     let mutable d = 0.
@@ -162,7 +162,6 @@ let brentMin f (a : float) b eps =
                 fu <- f u
 
                 if fu <= fx then
-
                     if u < x then b <- x else a <- x
                     v <- w
                     fv <- fw
@@ -170,7 +169,6 @@ let brentMin f (a : float) b eps =
                     fw <- fx
                     x <- u
                     fx <- fu
-
                 else
                     if u < x then 
                         a <- u
@@ -197,3 +195,100 @@ let brentMin f (a : float) b eps =
 let minimize f lowx highx =
     let brentError = 1.0e-5
     brentMin f lowx highx brentError
+
+/// (define (linear-interpolants x0 x1 n)
+///   (let ((dx (- x1 x0)) (n+1 (fix:+ n 1)))
+///     (let lp ((i 1) (xs '()))
+///       (if (fix:> i n)
+///       (reverse xs)
+///       (lp (fix:+ i 1)
+///           (cons (+ x0 (/ (* i dx) n+1)) xs))))))
+let linearInterpolants x0 x1 n =
+    let dx = x1 - x0
+    let sucN = n + 1
+    let rec loop xs i =
+        if i > n then
+            List.rev xs
+        else
+            loop ((x0 + (float i * dx) / float sucN)::xs) (i + 1) 
+
+    loop [] 1
+
+/// define (generate-list n proc) ; ==> ( (proc 0) (proc 1) ... (proc n-1) )
+///   (let loop ((i (fix:- n 1)) (list '()))
+///     (if (fix:< i 0)
+///         list
+///         (loop (fix:- i 1) (cons (proc i) list)))))
+let generateList n proc =
+    let rec loop xs i =
+        if i < 0 then
+            xs
+        else
+            loop (proc i::xs) (i - 1) 
+
+    loop [] (n - 1)
+
+/// (define (lagrange-interpolation-function ys xs)
+///   (let ((n (length ys)))
+///     (assert (fix:= (length xs) n))
+///     (define (poly x)
+///       (reduce + :zero
+///           (generate-list n
+///         (lambda (i)
+///           (/ (reduce * :one
+///                (generate-list n
+///                  (lambda (j)
+///                (if (fix:= j i)
+///                    (list-ref ys i)
+///                    (- x (list-ref xs j))))))
+///              (let ((xi (list-ref xs i)))
+///                (reduce * :one
+///              (generate-list n
+///                    (lambda (j)
+///                  (cond ((fix:< j i) (- (list-ref xs j) xi))
+///                    ((fix:= j i) (expt :-one i))
+///                    (else    (- xi (list-ref xs j)))))))))))))
+///     poly))
+let lagrangeInterpolation (ys : float list) (xs : float list) =
+    let n = ys.Length
+    if xs.Length <> n then
+        invalidArg "lagrangeInterpolation" "lists are not same length"
+    let poly x =
+        List.reduce (+)
+            <| generateList n
+                ( fun i ->
+                    let dividend =
+                        List.reduce (*) 
+                            <| generateList n
+                                ( fun j ->
+                                    if j = i then ys.[i]
+                                    else x - xs.[j] )
+                    let divisor =
+                        let xi = xs.[i]
+                        List.reduce (*) 
+                            <| generateList n
+                                ( fun j ->
+                                    if j < i then xs.[j] - xi
+                                    elif j = i then -1.**(float i)
+                                    else xi - xs.[j] )
+                    dividend / divisor )
+    poly
+
+/// (define (make-path t0 q0 t1 q1 qs)
+/// (let ((n (length qs)))
+///     (let ((ts (linear-interpolants t0 t1 n)))
+///       (Lagrange-interpolation-function
+///        (append (list q0) qs (list q1))
+///        (append (list t0) ts (list t1))))))
+let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : Scalar list) =
+    let t0 = timeToFloat t0
+    let t1 = timeToFloat t1
+    let qs = qs |> List.map timeToFloat
+
+    let ts = linearInterpolants t0 t1 qs.Length
+    [|
+        lagrangeInterpolation
+            ([q0] @ qs @ [q1])
+            ([t0] @ ts @ [t1])
+        |> wrapFloatFunction
+    |]
