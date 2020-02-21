@@ -13,6 +13,7 @@
     <Compile Include="NelderMead.fs" />
     <Compile Include="Ch1LagrangianMechanics.fs" />
     <Compile Include="UOM.fs" />
+    <None Include="Scripts\AnnotateScheme.fsx" />
     <None Include="Scripts/Script.fsx" />
     <None Include="paket.references" />
     <None Include="paket.template" />
