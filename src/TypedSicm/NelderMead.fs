@@ -1,5 +1,7 @@
 module TypedSicm.NelderMead
 
+open TypedSicm.Utilities
+
 /// (define nelder-start-step .01)
 let nelderStartStep = 0.01 
 /// (define nelder-epsilon 1.0e-10)
@@ -11,7 +13,48 @@ let nelderMaxiter = 1000
 let simplexVertex = List.head
 
 /// (define simplex-value cdr)
-let simplexValue  = List.tail
+let simplexValue = List.tail
+
+/// ((define simplex-highest car)
+let simplexHighest = List.head
+
+/// ((define simplex-but-highest cdr)
+let simplexButHighest = List.tail
+
+/// ((define simplex-next-highest cadr) ;"the car of the cdr"
+//let simplexNextHighest = List.tail >> List.head
+
+/// (define (simplex-lowest s) (car (last-pair s)))
+let simplexLowest s = (List.rev >> List.head) s
+
+/// (define simplex-entry cons)
+let simplexEntry = cons
+
+/// (define (make-simplex point step f)
+/// (simplex-sort
+///   (map (lambda (vertex) (simplex-entry vertex (f vertex)))
+///        (cons point
+///            (let ((n (vector-length point)))
+///          (generate-list n
+///            (lambda (i)
+///              (vector+vector point
+///                (scalar*vector step
+///              (v:make-basis-unit n i))))))))))
+let makeSimplex point step f =
+    ()
+
+
+/// (define simplex-centroid
+/// (lambda (simplex)
+///   (scalar*vector (/ 1 (simplex-size simplex))
+///            (a-reduce vector+vector
+///                  (map simplex-vertex simplex)))))
+let simplexCentroid =
+    fun simplex ->
+        let scalar = 1. / (Seq.length simplex |> float)
+        simplex
+     //   |> Seq.reduce ()
+    ()
 
 /// (define (simplex-add-entry entry s)
 ///   (let ((fv (simplex-value entry)))
@@ -128,7 +171,50 @@ let nelderMead f startPt startStep epsilon maxiter =
                 let vertex = (extender pv (Array.head sp)) shrinkCoef
                 [|Array.append vertex (f vertex)|]
         )
-        //Array.sort implement simplex sort
+        |> Array.map (fun xs -> 
+            xs
+            |> Array.map (fun ys -> Array.toList ys)
+            |> Array.toList
+        )
+        |> Array.toList
+        |> simplexSort
+
+    let nmStep simplex =
+        let g = simplexHighest simplex
+        //let h = simplexNextHighest simplex
+        let s = simplexLowest simplex
+        let sH = simplexButHighest simplex
+        let vg = simplexVertex g
+        let fg = simplexValue g
+        //let fh = simplexValue h
+        let fs = simplexValue s
+        //let extend = extender vg (simplexCentroid sH)
+        //let vr = extend reflectionCoef   
+        ()
+        //let fr = f vr                 //try reflection
+                                      
+        //if fr < fh then                  //reflection successful                         
+        //      if fr < fs  then               //new minimum 
+        //          let ve = extend expansionCoef              
+        //          let fe = f ve      //try expansion
+                  
+        //          if fe < fs then           //expansion successful
+        //                simplexAdjoin ve fe sH
+        //          else
+        //                simplexAdjoin vr fr sH
+        //      else
+        //          simplexAdjoin vr fr sH
+
+        //else
+        //      let vc = extend (if fr < fg then contractionCoef1 else contractionCoef2)                        
+        //      let fc = f vc          //try contraction                                 
+        //      if fc < fg then              //contraction successful
+        //            simplexAdjoin vc fc sH
+        //      else
+        //            simplexShrink s simplex
+
+
+
     ()
 
 

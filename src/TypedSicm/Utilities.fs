@@ -24,6 +24,10 @@ type MinimizeResult =
         Iterations : int
     }
 
+/// (define simplex-entry cons)
+let private privateCons x y = x :: y
+let cons = privateCons
+
 /// (define *sqrt-machine-epsilon* 
 ///   (sqrt *machine-epsilon*))
 /// 

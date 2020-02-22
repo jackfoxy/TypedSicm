@@ -1,8 +1,8 @@
 ﻿open System
 open System.IO
 
-let filePath = @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\NelderMead.scm"
-let outPath = @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\NelderMeadAnottated.scm"
+let filePath = @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\MakeSimplex.scm"
+let outPath = @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\MakeSimplexAnottated.scm"
 
 let data = File.ReadAllLines filePath
 
