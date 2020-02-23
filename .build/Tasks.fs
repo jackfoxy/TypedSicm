@@ -284,7 +284,7 @@ let createAndGetDefault () =
     }
 
     let runTestsOnly = BuildTask.create "RunTestsOnly" [] {
-        "tests/LambdaCalc.Tests/LambdaCalc.Tests.fsproj"
+        "tests/TypedSicm.Tests/TypedSicm.Tests.fsproj"
         |> DotNet.build (fun p -> 
             { p with
                 Configuration = buildConfiguration })
@@ -467,7 +467,8 @@ let createAndGetDefault () =
                             d.Name, 
                                 (DirectoryInfo.getSubDirectories d 
                                  |> Array.filter(fun x -> 
-                                    x.FullName.ToLower().Contains("netcoreapp2.1")
+                                    x.FullName.ToLower().Contains("netcoreapp3.0")
+                                    || x.FullName.ToLower().Contains("netcoreapp3.1")
                                     || x.FullName.ToLower().Contains("netstandard2.0")
                                  )
                                 ).[0]

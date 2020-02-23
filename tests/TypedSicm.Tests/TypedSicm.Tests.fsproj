@@ -1,23 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
-    <RootNamespace>TypedSicm.Tests</RootNamespace>
-    <AssemblyName>TypedSicm.Tests</AssemblyName>
     <Name>TypedSicm.Tests</Name>
+    <AssemblyName>TypedSicm.Tests</AssemblyName>
+    <RootNamespace>TypedSicm.Tests</RootNamespace>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="NelderMead.fs" />
+    <ProjectReference Include="..\..\src\TypedSicm\TypedSicm.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Generators.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="RunTests.fs" />
     <None Include="paket.references" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\TypedSicm\TypedSicm.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

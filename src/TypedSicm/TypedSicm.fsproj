@@ -4,7 +4,7 @@
     <AssemblyName>TypedSicm</AssemblyName>
     <RootNamespace>TypedSicm</RootNamespace>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Prelude.fs" />
