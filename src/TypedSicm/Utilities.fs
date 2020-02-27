@@ -1,6 +1,10 @@
 ﻿module TypedSicm.Utilities
 
 open System
+open FSharpx.Collections
+
+module Vector = RandomAccessList
+
 /// (define *machine-epsilon*
 ///   (let loop ((e 1.0))
 ///      (if (= 1.0 (+ e 1.0))
@@ -223,14 +227,14 @@ let linearInterpolants x0 x1 n =
 ///     (if (fix:< i 0)
 ///         list
 ///         (loop (fix:- i 1) (cons (proc i) list)))))
-let generateList n proc =
-    let rec loop xs i =
+let generateList (n : Scalar) proc =
+    let rec loop xs (i : Scalar) =
         if i < 0 then
             xs
         else
             loop (proc i::xs) (i - 1) 
 
-    loop [] (n - 1)
+    loop Vector.empty (n - 1)
 
 /// (define (lagrange-interpolation-function ys xs)
 ///   (let ((n (length ys)))
@@ -253,23 +257,23 @@ let generateList n proc =
 ///                    ((fix:= j i) (expt :-one i))
 ///                    (else    (- xi (list-ref xs j)))))))))))))
 ///     poly))
-let lagrangeInterpolation (ys : float list) (xs : float list) =
+let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
     let n = ys.Length
     if xs.Length <> n then
         invalidArg "lagrangeInterpolation" "lists are not same length"
     let poly x =
-        List.reduce (+)
+        Vector.reduce (+)
             <| generateList n
                 ( fun i ->
                     let dividend =
-                        List.reduce (*) 
+                        Vector.reduce (*) 
                             <| generateList n
                                 ( fun j ->
                                     if j = i then ys.[i]
                                     else x - xs.[j] )
                     let divisor =
                         let xi = xs.[i]
-                        List.reduce (*) 
+                        Vector.reduce (*) 
                             <| generateList n
                                 ( fun j ->
                                     if j < i then xs.[j] - xi
@@ -295,4 +299,4 @@ let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : Scalar list) =
             ([q0] @ qs @ [q1])
             ([t0] @ ts @ [t1])
         |> wrapFloatFunction
-    |]
+    |] |> Vector.ofSeq

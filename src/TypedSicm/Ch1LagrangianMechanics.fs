@@ -1,8 +1,11 @@
 namespace TypedSicm
 
 open System
+open FSharpx.Collections
 open Utilities
 open NelderMead
+
+module Vector = RandomAccessList
 
 /// Chapter 1, Lagrangian Mechanics
 module Ch1_LagrangianMechanics =
@@ -34,7 +37,17 @@ module Ch1_LagrangianMechanics =
     let gamma (q : UpIndexed) (time : Time) =
         let ds =
             q
-            |> Array.map (fun f -> derivitave f)
+            |> Vector.map (fun f -> 
+                match f with
+                | Func f' -> 
+                    derivitave f'.Invoke 
+                    |> ScalarFunc 
+                    |> ScalarOrFunc.Func
+                | Scalar s -> 
+                    derivitave id
+                    |> ScalarFunc
+                    |> ScalarOrFunc.Func
+            )
         {
             Time = time      
             CoordninatePath = q 
@@ -62,20 +75,25 @@ module Ch1_LagrangianMechanics =
     ///           (g:+ ans
     ///            (g:* (vector-ref v1 i)
     ///             (vector-ref v2 i))))))))
-    let dotProduct (vector1 : Scalar [])  (vector2 : Scalar [])  =
+    let dotProduct (vector1 : UpIndexed)  (vector2 : UpIndexed)  =
         vector1
-        |> Array.zip vector2
-        |> Array.map (fun (v1, v2) -> v1 * v2)
-        |> Array.fold (fun s t -> t + s ) (Int 0)
+        |> Vector.zip vector2
+        |> Vector.map (fun (v1, v2) ->   v1 * v2)
+        |> Vector.reduce (fun s t -> t + s )
 
     module S4ComputingActions =
         /// (define ((L-free-particle mass) local)
         ///     (let ((v (velocity local)))
         ///     (* 1/2 mass (dot-product v v))))
         let lagrangianFreeParticle (mass : Scalar) local = 
+       // let lagrangianFreeParticle mass local : Scalar = 
             let v = 
                 velocity local
-                |> Array.map (fun f ->  f local.Time)
+                |> Vector.map (fun f ->  
+                    match f with
+                    | Func f' -> f'.Invoke local.Time |> ScalarOrFunc.Scalar
+                    | Scalar s -> s |> ScalarOrFunc.Scalar 
+                )
                     
             (mass * (dotProduct v v)) / 2
 
@@ -95,10 +113,10 @@ module Ch1_LagrangianMechanics =
         ///         (+ (* 2 t) 1)))
         let testPath : UpIndexed =
             [|
-                (fun (time : Time) -> 4 * time + 7)
-                (fun (time : Time) -> 3 * time + 5)
-                (fun (time : Time) -> 2 * time + 1)
-            |]
+                (fun (time : Time) -> 4 * time + 7) |> ScalarFunc |> ScalarOrFunc.Func
+                (fun (time : Time) -> 3 * time + 5) |> ScalarFunc |> ScalarOrFunc.Func
+                (fun (time : Time) -> 2 * time + 1) |> ScalarFunc |> ScalarOrFunc.Func
+            |] |> Vector.ofSeq
 
         let test1 () = lagrangianAction (lagrangianFreeParticle (Scalar.Int 3)) testPath (floatToTime 0.) (floatToTime 10.)
         
@@ -106,8 +124,14 @@ module Ch1_LagrangianMechanics =
         ///     (* (- t t1) (- t t2) (nu t)))
         let makeEta (nu : UpIndexed) (time1 : Time) (time2 : Time) : UpIndexed =
             nu
-            |> Array.map (fun f -> 
-                fun (t : Scalar) -> (t - time1) * (t - time2) * f t 
+            |> Vector.map (fun f -> 
+                match f with
+                | Func f' -> 
+                    fun (t : Scalar) -> (t - time1) * (t - time2) * f'.Invoke t 
+                    |> ScalarFunc
+                    |> ScalarOrFunc.Func
+                | Scalar s -> 
+                    s |> ScalarOrFunc.Scalar
             )
 
         /// (define ((varied-free-particle-action mass q nu t1 t2) eps)
@@ -127,10 +151,10 @@ module Ch1_LagrangianMechanics =
         ///(up sin cos square)
         let nu : UpIndexed =
             [|
-                wrapFloatFunction Math.Sin
-                wrapFloatFunction Math.Cos
-                (fun x -> x * x)
-            |]
+                wrapFloatFunction Math.Sin |> ScalarFunc |> ScalarOrFunc.Func
+                wrapFloatFunction Math.Cos |>ScalarFunc |> ScalarOrFunc.Func
+                (fun x -> x * x) |> ScalarFunc |> ScalarOrFunc.Func
+            |] |> Vector.ofSeq
 
         let test2 () = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) 
                                                                                             (Scalar.Float 0.001)
