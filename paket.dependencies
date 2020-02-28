@@ -23,7 +23,7 @@ nuget Fake.DotNet.Testing.Expecto
 nuget Fake.DotNet.FSFormatting
 nuget FSharpx.Collections
 nuget MathNet.Numerics.FSharp
-nuget Microsoft.NET.Test.Sdk 16.4.0
+nuget Microsoft.NET.Test.Sdk
 nuget YoloDev.Expecto.TestSdk
 
 group Formatting
