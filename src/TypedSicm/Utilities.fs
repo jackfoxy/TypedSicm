@@ -228,11 +228,11 @@ let linearInterpolants x0 x1 n =
 ///         list
 ///         (loop (fix:- i 1) (cons (proc i) list)))))
 let generateList (n : Scalar) proc =
-    let rec loop xs (i : Scalar) =
-        if i < 0 then
+    let rec loop (xs : RandomAccessList<_>) (i : Scalar) =
+        if i < Int 0 then
             xs
         else
-            loop (proc i::xs) (i - 1) 
+            loop (proc (Vector.cons i xs)) (i - 1) 
 
     loop Vector.empty (n - 1)
 
@@ -257,8 +257,9 @@ let generateList (n : Scalar) proc =
 ///                    ((fix:= j i) (expt :-one i))
 ///                    (else    (- xi (list-ref xs j)))))))))))))
 ///     poly))
+(*
 let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
-    let n = ys.Length
+    let n = Int ys.Length
     if xs.Length <> n then
         invalidArg "lagrangeInterpolation" "lists are not same length"
     let poly x =
@@ -276,11 +277,12 @@ let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
                         Vector.reduce (*) 
                             <| generateList n
                                 ( fun j ->
-                                    if j < i then xs.[j] - xi
-                                    elif j = i then -1.**(float i)
+                                    if j < i then xs.[j] - xi |> Float
+                                    elif j = i then -1.**(float i) |> Float
                                     else xi - xs.[j] )
                     dividend / divisor )
     poly
+*)
 
 /// (define (make-path t0 q0 t1 q1 qs)
 /// (let ((n (length qs)))
@@ -288,6 +290,7 @@ let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
 ///       (Lagrange-interpolation-function
 ///        (append (list q0) qs (list q1))
 ///        (append (list t0) ts (list t1))))))
+(*
 let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : Scalar list) =
     let t0 = scalarToFloat t0
     let t1 = scalarToFloat t1
@@ -300,3 +303,4 @@ let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : Scalar list) =
             ([t0] @ ts @ [t1])
         |> wrapFloatFunction
     |] |> Vector.ofSeq
+*)

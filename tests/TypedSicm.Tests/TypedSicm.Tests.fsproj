@@ -4,18 +4,18 @@
     <AssemblyName>TypedSicm.Tests</AssemblyName>
     <RootNamespace>TypedSicm.Tests</RootNamespace>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\TypedSicm\TypedSicm.fsproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Generators.fs" />
     <Compile Include="NelderMead.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="RunTests.fs" />
-    <None Include="paket.references" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

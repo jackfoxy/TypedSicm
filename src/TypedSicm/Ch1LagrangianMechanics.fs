@@ -99,7 +99,7 @@ module Ch1_LagrangianMechanics =
 
         /// (define (Lagrangian-action L q t1 t2)
         ///     (definite-integral (compose L (Gamma q)) t1 t2))
-        let lagrangianAction (lagrangian : Local -> Scalar) path (time1 : Time) (time2 : Time) =
+        let lagrangianAction (lagrangian : Local -> ScalarOrFunc) path (time1 : Time) (time2 : Time) =
             let f =
                 fun time ->
                     lagrangian (gamma path time) 
@@ -164,7 +164,7 @@ module Ch1_LagrangianMechanics =
                 fun (x : float) ->
                     vFPA (Scalar.Float x)
             minimize vFPA' -2.0 1.
-
+(*
         /// (define ((parametric-path-action Lagrangian t0 q0 t1 q1) qs)
         ///     (let ((path (make-path t0 q0 t1 q1 qs)))
         ///         (Lagrangian-action Lagrangian path t0 t1)))
@@ -188,3 +188,4 @@ module Ch1_LagrangianMechanics =
                     initialQs
                 |> Array.toList
             makePath t0 q0 t1 q1 minimizingQs
+*)
