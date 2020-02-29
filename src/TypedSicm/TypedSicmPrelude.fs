@@ -13,8 +13,6 @@ open FSharpx.Collections
 
 module Vector = RandomAccessList
 
-//[<StructuralComparison>]
-//[<StructuralEquality>]
 [<CustomComparison>]
 [<CustomEquality>]
 type Scalar =
@@ -294,21 +292,6 @@ type Scalar =
     static member (+) ((xs : UpIndexed), y : Scalar) : UpIndexed = 
         y + xs
 
-    static member (+) (ys : UpIndexed, xs : UpIndexed) : UpIndexed = 
-        xs
-        |> Vector.zip ys
-        |> Vector.map (fun (x, y) ->  
-            match x, y with
-            | Scalar x', Scalar y' -> x' + y' |> ScalarOrFunc.Scalar
-            | Func x', Scalar y' -> x' + y' |> ScalarOrFunc.Func
-            | Scalar x', Func y' -> x' + y' |> ScalarOrFunc.Func
-            | Func x', Func y' -> x' + y' |> ScalarOrFunc.Func
-        )
-
-
-
-
-
     static member (*) (x : Scalar, (ys : UpIndexed)) : UpIndexed = 
         ys 
         |> Vector.map (fun y -> 
@@ -319,19 +302,6 @@ type Scalar =
 
     static member (*) ((xs : UpIndexed), y : Scalar) : UpIndexed = 
         y * xs
-
-
-
-    static member (*) (ys : UpIndexed, xs : UpIndexed) : UpIndexed = 
-        xs
-        |> Vector.zip ys
-        |> Vector.map (fun (x, y) ->  
-            match x, y with
-            | Scalar x', Scalar y' -> x' * y' |> ScalarOrFunc.Scalar
-            | Func x', Scalar y' -> x' * y' |> ScalarOrFunc.Func
-            | Scalar x', Func y' -> x' * y' |> ScalarOrFunc.Func
-            | Func x', Func y' -> x' * y' |> ScalarOrFunc.Func
-        )
 
 and Time = Scalar
 
@@ -502,21 +472,6 @@ let scalarToFloat scalar =
      | Int64 x -> float x
      | BigInt x -> float x
      | Float x -> x
-     //| Complex x -> x.Real
-
-/// cannot coerce (+) operator on UpIndexed, UpIndexed
-
-
-(*
-
-
-address this!!!!!
-
-*)
-let addUp (ys : UpIndexed) (xs : UpIndexed) : UpIndexed = 
-    xs
-    |> Vector.zip ys
-    |> Vector.map (fun (x, y) -> x + y )
 
 let inline floatToTime t : Time = Scalar.Float t
 
@@ -540,7 +495,6 @@ let wrapFloatFunction (f : (float -> float)) =
         | Int64 y -> f (float  y)  |> Scalar.Float
         | BigInt y -> f (float  y) |> Scalar.Float
         | Float y -> f y |> Scalar.Float 
-        //| Complex y -> f y.Real |> Scalar.Float 
 
 // to do: look at http://diffsharp.github.io/DiffSharp/index.html
 let derivitave (f : (Scalar -> Scalar)) =

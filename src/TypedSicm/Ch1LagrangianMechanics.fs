@@ -144,7 +144,7 @@ module Ch1_LagrangianMechanics =
             let eta = makeEta nu time1 time2
             lagrangianAction 
                 (lagrangianFreeParticle mass) 
-                (addUp q (eps * eta))
+                (Vector.map2 (+) q (eps * eta))
                 time1 
                 time2
        
