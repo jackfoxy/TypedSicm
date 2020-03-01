@@ -83,20 +83,18 @@ module Ch1_LagrangianMechanics =
         ///     (let ((v (velocity local)))
         ///     (* 1/2 mass (dot-product v v))))
         let lagrangianFreeParticle (mass : Scalar) local = 
-       // let lagrangianFreeParticle mass local : Scalar = 
             let v = 
                 velocity local
                 |> Vector.map (fun f ->  
                     match f with
-                    | Func f' -> f'.Invoke local.Time |> ScalarOrFunc.Scalar
+                    | Func f' -> f'.Invoke local.Time |> Indexable.Scalar
                     | _ -> f
                 )
-                    
             (mass * (dotProduct v v)) / 2
 
         /// (define (Lagrangian-action L q t1 t2)
         ///     (definite-integral (compose L (Gamma q)) t1 t2))
-        let lagrangianAction (lagrangian : Local -> ScalarOrFunc) path (time1 : Time) (time2 : Time) =
+        let lagrangianAction (lagrangian : Local -> Indexable) path (time1 : Time) (time2 : Time) =
             let f =
                 fun time ->
                     lagrangian (gamma path time) 

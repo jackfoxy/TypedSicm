@@ -21,7 +21,7 @@ let wrapScalarFunction (f : (Scalar -> Scalar)) =
         f (Float y)
         |> scalarToFloat
 
-let wrapScalarOrFunction (f :  Scalar -> ScalarOrFunc) =
+let wrapScalarOrFunction (f :  Scalar -> Indexable) =
     fun (y : float) -> 
         match f (Float y) with
         | Scalar s ->
@@ -43,7 +43,7 @@ let derivitave (f : (Scalar -> Scalar)) =
     |> wrapFloatFunction
 
 //let definiteIntegral (f : (Scalar -> Scalar)) start finish =
-let definiteIntegral (f : Scalar -> ScalarOrFunc) start finish =
+let definiteIntegral (f : Scalar -> Indexable) start finish =
     let f' : System.Func<float, float> = System.Func<float, float>(wrapScalarOrFunction f)
     Integrate.OnClosedInterval(f', scalarToFloat start, scalarToFloat finish)
 
@@ -54,8 +54,8 @@ let vectorConj x (xs : UpIndexed) =
 
 let scalarOrFuncToScalar x =
     match x with
-    | ScalarOrFunc.Scalar s -> s
+    | Indexable.Scalar s -> s
     | _ -> invalidArg "scalarOrFuncToScalar" "should not get here"
 
 let indexableFunc f =
-    f |> ScalarFunc |> ScalarOrFunc.Func
+    f |> ScalarFunc |> Indexable.Func

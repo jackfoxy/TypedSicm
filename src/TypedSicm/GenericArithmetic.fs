@@ -419,8 +419,8 @@ type Scalar =
         ys 
         |> Vector.map (fun y -> 
             match y with
-            | Scalar y' -> x + y' |> ScalarOrFunc.Scalar
-            | Func y' -> x + y' |> ScalarOrFunc.Func
+            | Scalar y' -> x + y' |> Indexable.Scalar
+            | Func y' -> x + y' |> Indexable.Func
         )
 
     static member (+) (xs : UpIndexed, y : Scalar) : UpIndexed = 
@@ -430,8 +430,8 @@ type Scalar =
         ys 
         |> Vector.map (fun y -> 
             match y with
-            | Scalar y' -> x * y' |> ScalarOrFunc.Scalar
-            | Func y' -> x * y' |> ScalarOrFunc.Func
+            | Scalar y' -> x * y' |> Indexable.Scalar
+            | Func y' -> x * y' |> Indexable.Func
         )
 
     static member (*) (xs : UpIndexed, y : Scalar) : UpIndexed = 
@@ -441,32 +441,32 @@ type Scalar =
         ys 
         |> Vector.map (fun y -> 
             match y with
-            | Scalar y' -> x - y' |> ScalarOrFunc.Scalar
-            | Func y' -> x - y' |> ScalarOrFunc.Func
+            | Scalar y' -> x - y' |> Indexable.Scalar
+            | Func y' -> x - y' |> Indexable.Func
         )
 
     static member (-) (xs : UpIndexed, y : Scalar) : UpIndexed = 
         xs 
         |> Vector.map (fun x -> 
             match x with
-            | Scalar x' -> x' - y |> ScalarOrFunc.Scalar
-            | Func x' -> x' - y |> ScalarOrFunc.Func
+            | Scalar x' -> x' - y |> Indexable.Scalar
+            | Func x' -> x' - y |> Indexable.Func
         )
 
     static member (/) (x : Scalar, ys : UpIndexed) : UpIndexed = 
         ys 
         |> Vector.map (fun y -> 
             match y with
-            | Scalar y' -> x / y' |> ScalarOrFunc.Scalar
-            | Func y' -> x / y' |> ScalarOrFunc.Func
+            | Scalar y' -> x / y' |> Indexable.Scalar
+            | Func y' -> x / y' |> Indexable.Func
         )
 
     static member (/) (xs : UpIndexed, y : Scalar) : UpIndexed = 
         xs 
         |> Vector.map (fun x -> 
             match x with
-            | Scalar x' -> x' / y |> ScalarOrFunc.Scalar
-            | Func x' -> x' / y |> ScalarOrFunc.Func
+            | Scalar x' -> x' / y |> Indexable.Scalar
+            | Func x' -> x' / y |> Indexable.Func
         )
 
 and Time = Scalar
@@ -607,281 +607,281 @@ and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =
     static member (/) (x: ScalarFunc, y : ScalarFunc) = 
         ScalarFunc (fun z -> x.Invoke z / y.Invoke z)
 
-and ScalarOrFunc =
+and Indexable =
 | Scalar of Scalar
 | Func of ScalarFunc
 
     with
 
-    static member (+) (x : Scalar, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (+) (x : Scalar, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x + y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x + y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x + y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (+) (x : ScalarOrFunc, y : Scalar) : ScalarOrFunc = 
+    static member (+) (x : Indexable, y : Scalar) : Indexable = 
         y + x
 
-    static member (+) (x : int, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (+) (x : int, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x + y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x + y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x + y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (+) (x : ScalarOrFunc, y : int) : ScalarOrFunc = 
+    static member (+) (x : Indexable, y : int) : Indexable = 
         y + x
 
-    static member (+) (x : int64, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (+) (x : int64, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x + y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x + y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x + y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (+) (x : ScalarOrFunc, y : int64) : ScalarOrFunc = 
+    static member (+) (x : Indexable, y : int64) : Indexable = 
         y + x
 
-    static member (+) (x : BigInteger, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (+) (x : BigInteger, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x + y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x + y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x + y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (+) (x : ScalarOrFunc, y : BigInteger) : ScalarOrFunc = 
+    static member (+) (x : Indexable, y : BigInteger) : Indexable = 
         y + x
 
-    static member (+) (x : float, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (+) (x : float, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x + y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x + y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x + y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (+) (x : ScalarOrFunc, y : float) : ScalarOrFunc = 
+    static member (+) (x : Indexable, y : float) : Indexable = 
         y + x
 
-    static member (+) (x : ScalarOrFunc, y : ScalarOrFunc) : ScalarOrFunc =
+    static member (+) (x : Indexable, y : Indexable) : Indexable =
         match x, y with
-        | Scalar x', Scalar y' -> x' + y' |> ScalarOrFunc.Scalar
-        | Func x', Scalar y' -> x' + y' |> ScalarOrFunc.Func
-        | Scalar x', Func y' -> x' + y' |> ScalarOrFunc.Func
-        | Func x', Func y' -> x' + y' |> ScalarOrFunc.Func
+        | Scalar x', Scalar y' -> x' + y' |> Indexable.Scalar
+        | Func x', Scalar y' -> x' + y' |> Indexable.Func
+        | Scalar x', Func y' -> x' + y' |> Indexable.Func
+        | Func x', Func y' -> x' + y' |> Indexable.Func
 
-    static member (*) (x : Scalar, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (*) (x : Scalar, y : Indexable) : Indexable = 
         match y with
-        | Scalar y -> x * y |> ScalarOrFunc.Scalar
+        | Scalar y -> x * y |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x * y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (*) (x : ScalarOrFunc, y : Scalar) : ScalarOrFunc = 
+    static member (*) (x : Indexable, y : Scalar) : Indexable = 
         y + x
 
-    static member (*) (x : int, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (*) (x : int, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x * y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x * y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x * y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (*) (x : ScalarOrFunc, y : int) : ScalarOrFunc = 
+    static member (*) (x : Indexable, y : int) : Indexable = 
         y * x
 
-    static member (*) (x : int64, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (*) (x : int64, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x * y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x * y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x * y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (*) (x : ScalarOrFunc, y : int64) : ScalarOrFunc = 
+    static member (*) (x : Indexable, y : int64) : Indexable = 
         y * x
 
-    static member (*) (x : BigInteger, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (*) (x : BigInteger, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x * y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x * y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x * y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (*) (x : ScalarOrFunc, y : BigInteger) : ScalarOrFunc = 
+    static member (*) (x : Indexable, y : BigInteger) : Indexable = 
         y * x
 
-    static member (*) (x : float, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (*) (x : float, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x * y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x * y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x * y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (*) (x : ScalarOrFunc, y : float) : ScalarOrFunc = 
+    static member (*) (x : Indexable, y : float) : Indexable = 
         y * x
 
-    static member (*) (x : ScalarOrFunc, y : ScalarOrFunc) : ScalarOrFunc =
+    static member (*) (x : Indexable, y : Indexable) : Indexable =
         match x, y with
-        | Scalar x', Scalar y' -> x' * y' |> ScalarOrFunc.Scalar
-        | Func x', Scalar y' -> x' * y' |> ScalarOrFunc.Func
-        | Scalar x', Func y' -> x' * y' |> ScalarOrFunc.Func
-        | Func x', Func y' -> x' * y' |> ScalarOrFunc.Func
+        | Scalar x', Scalar y' -> x' * y' |> Indexable.Scalar
+        | Func x', Scalar y' -> x' * y' |> Indexable.Func
+        | Scalar x', Func y' -> x' * y' |> Indexable.Func
+        | Func x', Func y' -> x' * y' |> Indexable.Func
 
-    static member (-) (x : Scalar, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (-) (x : Scalar, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x - y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x - y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x - y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (-) (x : ScalarOrFunc, y : Scalar) : ScalarOrFunc = 
+    static member (-) (x : Indexable, y : Scalar) : Indexable = 
         match x with
-        | Scalar x' -> x' - y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' - y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z - y) |> ScalarFunc
             Func w 
 
-    static member (-) (x : int, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (-) (x : int, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x - y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x - y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x - y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (-) (x : ScalarOrFunc, y : int) : ScalarOrFunc = 
+    static member (-) (x : Indexable, y : int) : Indexable = 
         match x with
-        | Scalar x' -> x' - y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' - y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z - y) |> ScalarFunc
             Func w 
 
-    static member (-) (x : int64, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (-) (x : int64, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x - y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x - y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x - y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (-) (x : ScalarOrFunc, y : int64) : ScalarOrFunc = 
+    static member (-) (x : Indexable, y : int64) : Indexable = 
         match x with
-        | Scalar x' -> x' - y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' - y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z - y) |> ScalarFunc
             Func w
 
-    static member (-) (x : BigInteger, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (-) (x : BigInteger, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x - y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x - y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x - y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (-) (x : ScalarOrFunc, y : BigInteger) : ScalarOrFunc = 
+    static member (-) (x : Indexable, y : BigInteger) : Indexable = 
         match x with
-        | Scalar x' -> x' - y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' - y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z - y) |> ScalarFunc
             Func w 
 
-    static member (-) (x : float, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (-) (x : float, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x - y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x - y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x - y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (-) (x : ScalarOrFunc, y : float) : ScalarOrFunc = 
+    static member (-) (x : Indexable, y : float) : Indexable = 
         match x with
-        | Scalar x' -> x' - y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' - y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z - y) |> ScalarFunc
             Func w 
 
-    static member (-) (x : ScalarOrFunc, y : ScalarOrFunc) : ScalarOrFunc =
+    static member (-) (x : Indexable, y : Indexable) : Indexable =
         match x, y with
-        | Scalar x', Scalar y' -> x' - y' |> ScalarOrFunc.Scalar
-        | Func x', Scalar y' -> x' - y' |> ScalarOrFunc.Func
-        | Scalar x', Func y' -> x' - y' |> ScalarOrFunc.Func
-        | Func x', Func y' -> x' - y' |> ScalarOrFunc.Func
+        | Scalar x', Scalar y' -> x' - y' |> Indexable.Scalar
+        | Func x', Scalar y' -> x' - y' |> Indexable.Func
+        | Scalar x', Func y' -> x' - y' |> Indexable.Func
+        | Func x', Func y' -> x' - y' |> Indexable.Func
 
-    static member (/) (x : Scalar, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (/) (x : Scalar, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x / y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x / y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (/) (x : ScalarOrFunc, y : Scalar) : ScalarOrFunc = 
+    static member (/) (x : Indexable, y : Scalar) : Indexable = 
         match x with
-        | Scalar x' -> x' / y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' / y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z / y) |> ScalarFunc
             Func w 
 
-    static member (/) (x : int, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (/) (x : int, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x / y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x / y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (/) (x : ScalarOrFunc, y : int) : ScalarOrFunc = 
+    static member (/) (x : Indexable, y : int) : Indexable = 
         match x with
-        | Scalar x' -> x' / y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' / y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z / y) |> ScalarFunc
             Func w 
 
-    static member (/) (x : int64, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (/) (x : int64, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x / y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x / y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (/) (x : ScalarOrFunc, y : int64) : ScalarOrFunc = 
+    static member (/) (x : Indexable, y : int64) : Indexable = 
         match x with
-        | Scalar x' -> x' / y |> ScalarOrFunc.Scalar
-        | Func x' -> 
-            let w =  (fun z -> x'.Invoke z / y) |> ScalarFunc
-            Func w
-
-    static member (/) (x : BigInteger, y : ScalarOrFunc) : ScalarOrFunc = 
-        match y with
-        | Scalar y' -> x / y' |> ScalarOrFunc.Scalar
-        | Func y' -> 
-            let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
-            Func w 
-
-    static member (/) (x : ScalarOrFunc, y : BigInteger) : ScalarOrFunc = 
-        match x with
-        | Scalar x' -> x' / y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' / y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z / y) |> ScalarFunc
             Func w
 
-    static member (/) (x : float, y : ScalarOrFunc) : ScalarOrFunc = 
+    static member (/) (x : BigInteger, y : Indexable) : Indexable = 
         match y with
-        | Scalar y' -> x / y' |> ScalarOrFunc.Scalar
+        | Scalar y' -> x / y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (/) (x : ScalarOrFunc, y : float) : ScalarOrFunc = 
+    static member (/) (x : Indexable, y : BigInteger) : Indexable = 
         match x with
-        | Scalar x' -> x' / y |> ScalarOrFunc.Scalar
+        | Scalar x' -> x' / y |> Indexable.Scalar
         | Func x' -> 
             let w =  (fun z -> x'.Invoke z / y) |> ScalarFunc
             Func w
 
-    static member (/) (x : ScalarOrFunc, y : ScalarOrFunc) : ScalarOrFunc =
+    static member (/) (x : float, y : Indexable) : Indexable = 
+        match y with
+        | Scalar y' -> x / y' |> Indexable.Scalar
+        | Func y' -> 
+            let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
+            Func w 
+
+    static member (/) (x : Indexable, y : float) : Indexable = 
+        match x with
+        | Scalar x' -> x' / y |> Indexable.Scalar
+        | Func x' -> 
+            let w =  (fun z -> x'.Invoke z / y) |> ScalarFunc
+            Func w
+
+    static member (/) (x : Indexable, y : Indexable) : Indexable =
         match x, y with
-        | Scalar x', Scalar y' -> x' / y' |> ScalarOrFunc.Scalar
-        | Func x', Scalar y' -> x' / y' |> ScalarOrFunc.Func
-        | Scalar x', Func y' -> x' / y' |> ScalarOrFunc.Func
-        | Func x', Func y' -> x' / y' |> ScalarOrFunc.Func
+        | Scalar x', Scalar y' -> x' / y' |> Indexable.Scalar
+        | Func x', Scalar y' -> x' / y' |> Indexable.Func
+        | Scalar x', Func y' -> x' / y' |> Indexable.Func
+        | Func x', Func y' -> x' / y' |> Indexable.Func
 
-and UpIndexed = RandomAccessList<ScalarOrFunc>
+and UpIndexed = RandomAccessList<Indexable>
 
 and DownIndexed =  (Scalar -> Scalar) []
 

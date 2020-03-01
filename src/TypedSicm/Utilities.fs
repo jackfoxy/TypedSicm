@@ -219,7 +219,7 @@ let linearInterpolants (x0 : Scalar) (x1 : Scalar) n =
         if i > n then
             xs
         else
-            loop (Vector.cons (ScalarOrFunc.Scalar (x0 + (i * dx) / sucN)) xs) (i + 1) 
+            loop (Vector.cons (Indexable.Scalar (x0 + (i * dx) / sucN)) xs) (i + 1) 
 
     loop Vector.empty 1
 
@@ -298,10 +298,10 @@ let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
 let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : UpIndexed) =
     let ts = linearInterpolants t0 t1 qs.Length
 
-    let q0 = ScalarOrFunc.Scalar q0
-    let q1 = ScalarOrFunc.Scalar q1
-    let t0 = ScalarOrFunc.Scalar t0
-    let t1 = ScalarOrFunc.Scalar t1
+    let q0 = Indexable.Scalar q0
+    let q1 = Indexable.Scalar q1
+    let t0 = Indexable.Scalar t0
+    let t1 = Indexable.Scalar t1
 
     [| 
         lagrangeInterpolation

@@ -348,7 +348,7 @@ module GenericArithmetic =
         ]
 
     let wFunc = ScalarFunc (fun z -> z * Scalar.Int 2)
-    let upIndexed = RandomAccessList.ofSeq [| ScalarOrFunc.Func wFunc |]
+    let upIndexed = RandomAccessList.ofSeq [| Indexable.Func wFunc |]
 
     [<Tests>]
     let genericArithmeticUpIndexed =
