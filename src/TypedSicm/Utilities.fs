@@ -212,28 +212,28 @@ let minimize f lowx highx =
 ///       (reverse xs)
 ///       (lp (fix:+ i 1)
 ///           (cons (+ x0 (/ (* i dx) n+1)) xs))))))
-let linearInterpolants x0 x1 n =
+let linearInterpolants (x0 : Scalar) (x1 : Scalar) n =
     let dx = x1 - x0
     let sucN = n + 1
     let rec loop xs i =
         if i > n then
-            List.rev xs
+            xs
         else
-            loop ((x0 + (float i * dx) / float sucN)::xs) (i + 1) 
+            loop (Vector.cons (ScalarOrFunc.Scalar (x0 + (i * dx) / sucN)) xs) (i + 1) 
 
-    loop [] 1
+    loop Vector.empty 1
 
 /// define (generate-list n proc) ; ==> ( (proc 0) (proc 1) ... (proc n-1) )
 ///   (let loop ((i (fix:- n 1)) (list '()))
 ///     (if (fix:< i 0)
 ///         list
 ///         (loop (fix:- i 1) (cons (proc i) list)))))
-let generateList (n : Scalar) proc =
-    let rec loop (xs : RandomAccessList<_>) (i : Scalar) =
-        if i < Int 0 then
+let generateList n proc =
+    let rec loop xs i =
+        if i < 0 then
             xs
         else
-            loop (proc (Vector.cons i xs)) (i - 1) 
+            loop (Vector.cons (proc i) xs) (i - 1) 
 
     loop Vector.empty (n - 1)
 
@@ -258,9 +258,8 @@ let generateList (n : Scalar) proc =
 ///                    ((fix:= j i) (expt :-one i))
 ///                    (else    (- xi (list-ref xs j)))))))))))))
 ///     poly))
-(*
 let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
-    let n = Int ys.Length
+    let n = ys.Length
     if xs.Length <> n then
         invalidArg "lagrangeInterpolation" "lists are not same length"
     let poly x =
@@ -270,20 +269,25 @@ let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
                     let dividend =
                         Vector.reduce (*) 
                             <| generateList n
-                                ( fun j ->
-                                    if j = i then ys.[i]
-                                    else x - xs.[j] )
+                                (fun (j : int) ->
+                                    if j = i then 
+                                        scalarOrFuncToScalar ys.[i]
+                                    else 
+                                        x - scalarOrFuncToScalar xs.[j] )
                     let divisor =
                         let xi = xs.[i]
                         Vector.reduce (*) 
                             <| generateList n
-                                ( fun j ->
-                                    if j < i then xs.[j] - xi |> Float
-                                    elif j = i then -1.**(float i) |> Float
-                                    else xi - xs.[j] )
+                                (fun j ->
+                                    if j < i then 
+                                        scalarOrFuncToScalar (xs.[j] - xi) 
+                                    elif j = i then 
+                                        (-1. ** (float i)) 
+                                        |> Scalar.Float
+                                    else 
+                                        scalarOrFuncToScalar (xi - xs.[j]) )
                     dividend / divisor )
     poly
-*)
 
 /// (define (make-path t0 q0 t1 q1 qs)
 /// (let ((n (length qs)))
@@ -291,17 +295,17 @@ let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
 ///       (Lagrange-interpolation-function
 ///        (append (list q0) qs (list q1))
 ///        (append (list t0) ts (list t1))))))
-(*
-let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : Scalar list) =
-    let t0 = scalarToFloat t0
-    let t1 = scalarToFloat t1
-    let qs = qs |> List.map scalarToFloat
-
+let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : UpIndexed) =
     let ts = linearInterpolants t0 t1 qs.Length
-    [|
+
+    let q0 = ScalarOrFunc.Scalar q0
+    let q1 = ScalarOrFunc.Scalar q1
+    let t0 = ScalarOrFunc.Scalar t0
+    let t1 = ScalarOrFunc.Scalar t1
+
+    [| 
         lagrangeInterpolation
-            ([q0] @ qs @ [q1])
-            ([t0] @ ts @ [t1])
-        |> wrapFloatFunction
+            (Vector.cons q0 (vectorConj q1 qs))
+            (Vector.cons t0 (vectorConj t1 ts)) 
+        |> indexableFunc
     |] |> Vector.ofSeq
-*)

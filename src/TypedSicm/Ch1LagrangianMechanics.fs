@@ -41,13 +41,9 @@ module Ch1_LagrangianMechanics =
             |> Vector.map (fun f -> 
                 match f with
                 | Func f' -> 
-                    derivitave f'.Invoke 
-                    |> ScalarFunc 
-                    |> ScalarOrFunc.Func
+                    derivitave f'.Invoke |> indexableFunc
                 | Scalar s -> 
-                    derivitave id
-                    |> ScalarFunc
-                    |> ScalarOrFunc.Func
+                    derivitave id |> indexableFunc
             )
         {
             Time = time      
@@ -93,7 +89,7 @@ module Ch1_LagrangianMechanics =
                 |> Vector.map (fun f ->  
                     match f with
                     | Func f' -> f'.Invoke local.Time |> ScalarOrFunc.Scalar
-                    | Scalar s -> s |> ScalarOrFunc.Scalar 
+                    | _ -> f
                 )
                     
             (mass * (dotProduct v v)) / 2
@@ -106,7 +102,7 @@ module Ch1_LagrangianMechanics =
                     lagrangian (gamma path time) 
                 |> definiteIntegral
 
-            f (scalarToFloat time1) (scalarToFloat time2)
+            f time1 time2
 
         /// (define (test-path t)
         ///     (up (+ (* 4 t) 7)
@@ -114,9 +110,9 @@ module Ch1_LagrangianMechanics =
         ///         (+ (* 2 t) 1)))
         let testPath : UpIndexed =
             [|
-                (fun (time : Time) -> 4 * time + 7) |> ScalarFunc |> ScalarOrFunc.Func
-                (fun (time : Time) -> 3 * time + 5) |> ScalarFunc |> ScalarOrFunc.Func
-                (fun (time : Time) -> 2 * time + 1) |> ScalarFunc |> ScalarOrFunc.Func
+                (fun (time : Time) -> 4 * time + 7) |> indexableFunc
+                (fun (time : Time) -> 3 * time + 5) |> indexableFunc
+                (fun (time : Time) -> 2 * time + 1) |> indexableFunc
             |] |> Vector.ofSeq
 
         let test1 () = lagrangianAction (lagrangianFreeParticle (Scalar.Int 3)) testPath (floatToTime 0.) (floatToTime 10.)
@@ -129,10 +125,9 @@ module Ch1_LagrangianMechanics =
                 match f with
                 | Func f' -> 
                     fun (t : Scalar) -> (t - time1) * (t - time2) * f'.Invoke t 
-                    |> ScalarFunc
-                    |> ScalarOrFunc.Func
-                | Scalar s -> 
-                    s |> ScalarOrFunc.Scalar
+                    |> indexableFunc
+                | _ -> 
+                    f
             )
 
         /// (define ((varied-free-particle-action mass q nu t1 t2) eps)
@@ -141,7 +136,7 @@ module Ch1_LagrangianMechanics =
         ///                            (+ q (* eps eta))
         ///                            t1
         ///                            t2)))
-        let variedFreeParticleAction mass (q : UpIndexed) nu time1 time2 (eps : Scalar) =
+        let variedFreeParticleAction mass q nu time1 time2 eps =
             let eta = makeEta nu time1 time2
             lagrangianAction 
                 (lagrangianFreeParticle mass) 
@@ -152,20 +147,20 @@ module Ch1_LagrangianMechanics =
         ///(up sin cos square)
         let nu : UpIndexed =
             [|
-                wrapFloatFunction Math.Sin |> ScalarFunc |> ScalarOrFunc.Func
-                wrapFloatFunction Math.Cos |>ScalarFunc |> ScalarOrFunc.Func
-                (fun x -> x * x) |> ScalarFunc |> ScalarOrFunc.Func
+                wrapFloatFunction Math.Sin |> indexableFunc
+                wrapFloatFunction Math.Cos |> indexableFunc
+                (fun x -> x * x) |> indexableFunc
             |] |> Vector.ofSeq
 
-        let test2 () = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) 
-                                                                                            (Scalar.Float 0.001)
+        let test2 () = 
+            variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) (Scalar.Float 0.001)
         let test3 () = 
             let vFPA = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.)
             let vFPA' =
                 fun (x : float) ->
                     vFPA (Scalar.Float x)
             minimize vFPA' -2.0 1.
-(*
+
         /// (define ((parametric-path-action Lagrangian t0 q0 t1 q1) qs)
         ///     (let ((path (make-path t0 q0 t1 q1 qs)))
         ///         (Lagrangian-action Lagrangian path t0 t1)))
@@ -174,19 +169,19 @@ module Ch1_LagrangianMechanics =
                 let path = makePath t0 q0 t1 q1 qs 
                 lagrangianAction lagrangian path t0 t1
 
-        /// (define (find-path Lagrangian t0 q0 t1 q1 n)
-        ///     (let ((initial-qs (linear-interpolants q0 q1 n)))
-        ///         (let ((minimizing-qs
-        ///                 (multidimensional-minimize
-        ///                     (parametric-path-action Lagrangian t0 q0 t1 q1)
-        ///                     initial-qs)))
-        ///             (make-path t0 q0 t1 q1 minimizing-qs))))
-        let findPath lagrangian t0 q0 t1 q1 n =
-            let initialQs = linearInterpolants q0 q1 n
-            let minimizingQs =
-                multidimensionalMinimize
-                    (parametricPathAction lagrangian t0 q0 t1 q1)
-                    initialQs
-                |> Array.toList
-            makePath t0 q0 t1 q1 minimizingQs
-*)
+        ///// (define (find-path Lagrangian t0 q0 t1 q1 n)
+        /////     (let ((initial-qs (linear-interpolants q0 q1 n)))
+        /////         (let ((minimizing-qs
+        /////                 (multidimensional-minimize
+        /////                     (parametric-path-action Lagrangian t0 q0 t1 q1)
+        /////                     initial-qs)))
+        /////             (make-path t0 q0 t1 q1 minimizing-qs))))
+        //let findPath lagrangian t0 q0 t1 q1 n =
+        //    let initialQs = linearInterpolants q0 q1 n
+        //    let minimizingQs =
+        //        multidimensionalMinimize
+        //            (parametricPathAction lagrangian t0 q0 t1 q1)
+        //            initialQs
+        //        |> Array.toList
+        //    makePath t0 q0 t1 q1 minimizingQs
+

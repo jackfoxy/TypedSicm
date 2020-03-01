@@ -2,7 +2,10 @@
 module TypedSicm.TypedSicmPrelude
 
 open MathNet.Numerics
+open FSharpx.Collections
 open GenericArithmetic
+
+module Vector = RandomAccessList
     
 let scalarToFloat scalar =
      match scalar with
@@ -42,4 +45,17 @@ let derivitave (f : (Scalar -> Scalar)) =
 //let definiteIntegral (f : (Scalar -> Scalar)) start finish =
 let definiteIntegral (f : Scalar -> ScalarOrFunc) start finish =
     let f' : System.Func<float, float> = System.Func<float, float>(wrapScalarOrFunction f)
-    Integrate.OnClosedInterval(f', start, finish)
+    Integrate.OnClosedInterval(f', scalarToFloat start, scalarToFloat finish)
+
+let vectorConj x (xs : UpIndexed) =
+    Vector.rev xs
+    |> (Vector.cons x)
+    |> Vector.rev
+
+let scalarOrFuncToScalar x =
+    match x with
+    | ScalarOrFunc.Scalar s -> s
+    | _ -> invalidArg "scalarOrFuncToScalar" "should not get here"
+
+let indexableFunc f =
+    f |> ScalarFunc |> ScalarOrFunc.Func
