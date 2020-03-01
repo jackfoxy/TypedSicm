@@ -11,8 +11,9 @@
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="NelderMead.fs" />
     <Compile Include="Generators.fs" />
+    <Compile Include="GenericArithmetic.fs" />
+    <Compile Include="NelderMead.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="RunTests.fs" />
     <None Include="paket.references" />

@@ -2,6 +2,7 @@
 
 open System
 open FSharpx.Collections
+open GenericArithmetic
 
 module Vector = RandomAccessList
 

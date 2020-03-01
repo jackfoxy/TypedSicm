@@ -1,6 +1,7 @@
 module TypedSicm.NelderMead
 
-open TypedSicm.Utilities
+open Utilities
+open GenericArithmetic
 
 /// (define nelder-start-step .01)
 let nelderStartStep = 0.01 

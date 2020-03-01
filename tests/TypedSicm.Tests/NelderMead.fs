@@ -20,4 +20,3 @@ module NelderMead =
                 //Expect.floatClose Accuracy.high result 435. "Expected 435"
                 Expect.isTrue true ""
         ]
-

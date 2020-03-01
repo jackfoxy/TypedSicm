@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Name>TypedSicm</Name>
     <AssemblyName>TypedSicm</AssemblyName>
@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Prelude.fs" />
+    <Compile Include="GenericArithmetic.fs" />
     <Compile Include="TypedSicmPrelude.fs" />
     <Compile Include="Utilities.fs" />
     <Compile Include="NelderMead.fs" />

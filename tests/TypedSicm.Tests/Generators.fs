@@ -243,3 +243,52 @@ type Generators =
                 override __.Generator = 
                     GeneratorsCode.genNonEmptyNonAllWhitespaceStringList()
                     }
+
+module Combinatorics =
+    //http://fssnip.net/2z/title/All-combinations-of-list-elements
+    let allCombinations lst =
+        let rec comb accLst elemLst =
+            match elemLst with
+            | h::t ->
+                let next = [h]::List.map (fun el -> h::el) accLst @ accLst
+                comb next t
+            | _ -> accLst
+        comb [] lst
+
+
+    //http://www.fssnip.net/4u/title/Very-Fast-Permutations
+    let rec permutations = function
+        | []      -> seq [List.empty]
+        | x :: xs -> Seq.collect (insertions x) (permutations xs)
+    and insertions x = function
+        | []             -> [[x]]
+        | (y :: ys) as xs -> (x::xs)::(List.map (fun x -> y::x) (insertions x ys))
+
+    let permutationsOfLength lst length =
+        allCombinations lst
+        |> List.filter (fun xs -> xs.Length = length)
+        |> List.collect (fun xs ->
+            [xs; List.rev xs]
+        )
+        |> List.sort
+        |> List.toArray
+
+    let genPermutationTests (template : string) (lst : string list) =
+        permutationsOfLength lst 2
+        |> Array.map (fun xs ->
+            let xs' = List.toArray xs
+            template
+                .Replace("##1", xs'.[0])
+                .Replace("##2", xs'.[1])
+                .Replace("Scalar.BigInt 5", "(Scalar.BigInt <| BigInteger 5)")
+                .Replace("Scalar.BigInt 3", "(Scalar.BigInt <| BigInteger 3)")
+                .Replace("Scalar.BigInt 2", "(Scalar.BigInt <| BigInteger 2)")
+                .Replace("Scalar.Int64 5", "(Scalar.Int64 <| int64 5)")
+                .Replace("Scalar.Int64 3", "(Scalar.Int64 <| int64 3)")
+                .Replace("Scalar.Int64 2", "(Scalar.Int64 <| int64 2)")
+                .Replace("Scalar.Float 5", "Scalar.Float 5.")
+                .Replace("Scalar.Float 3", "Scalar.Float 3.")
+                .Replace("Scalar.Float 2", "Scalar.Float 2.")
+                .Replace("int 2", "2")
+                .Replace("int 3", "3")
+        )

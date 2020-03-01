@@ -2,6 +2,7 @@ namespace TypedSicm
 
 open System
 open FSharpx.Collections
+open GenericArithmetic
 open Utilities
 open NelderMead
 
