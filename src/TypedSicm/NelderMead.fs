@@ -1,7 +1,14 @@
 module TypedSicm.NelderMead
 
+open FSharpx.Collections
 open Utilities
 open GenericArithmetic
+
+module Vector = RandomAccessList
+
+type Point = RandomAccessList<Indexable>
+type SimplexEntry = Point * Scalar
+type Simplex = RandomAccessList<SimplexEntry>
 
 /// (define nelder-start-step .01)
 let nelderStartStep = 0.01 
@@ -11,25 +18,58 @@ let nelderEpsilon = 1.0e-10
 let nelderMaxiter = 1000
 
 /// (define simplex-vertex car)
-let simplexVertex = List.head
+let simplexVertex = fst
 
 /// (define simplex-value cdr)
-let simplexValue = List.tail
+let simplexValue = snd
 
 /// ((define simplex-highest car)
-let simplexHighest = List.head
+let simplexHighest = Vector.head
 
 /// ((define simplex-but-highest cdr)
-let simplexButHighest = List.tail
+let simplexButHighest = Vector.tail
 
 /// ((define simplex-next-highest cadr) ;"the car of the cdr"
-//let simplexNextHighest = List.tail >> List.head
+let simplexNextHighest = Vector.tail >> Vector.head
 
 /// (define (simplex-lowest s) (car (last-pair s)))
-let simplexLowest s = (List.rev >> List.head) s
+let simplexLowest s = (Vector.rev >> Vector.head) s
 
 /// (define simplex-entry cons)
-let simplexEntry = cons
+let simplexEntry point scalar = point, scalar
+
+/// (define (simplex-add-entry entry s)
+///   (let ((fv (simplex-value entry)))
+///     (let loop ((s s))
+///       (cond ((null? s) (list entry))
+///             ((> fv (simplex-value (car s))) (cons entry s))
+///             (else (cons (car s) (loop (cdr s))))))))
+let simplexAddEntry (entry : SimplexEntry) s =
+    let fv = simplexValue entry
+
+    let rec loop (s' : Simplex) =
+        if s'.IsEmpty then
+            [|entry|] |> Vector.ofSeq
+        elif fv > (simplexValue s'.Head) then
+            Vector.cons entry s'
+        else
+            Vector.cons s'.Head (loop s'.Tail)
+            
+    loop s
+
+/// (define (simplex-sort s)
+///   (let lp ((s s) (ans '()))
+///     (if (null? s)
+///         ans
+///         (lp (cdr s) (simplex-add-entry (car s) ans)))))
+let simplexSort (s : Simplex) =
+    let rec loop (s : Simplex) ans =
+        match s with
+        | Vector.Nil -> ans
+        | Vector.Cons  (hd, tl) ->
+            loop tl (simplexAddEntry hd ans)
+
+    loop s Vector.empty<SimplexEntry>
 
 /// (define (make-simplex point step f)
 /// (simplex-sort
@@ -41,9 +81,16 @@ let simplexEntry = cons
 ///              (vector+vector point
 ///                (scalar*vector step
 ///              (v:make-basis-unit n i))))))))))
-let makeSimplex point step f =
-    ()
+//let makeSimplex (point : RandomAccessList<Scalar>) (step : Scalar) (f : RandomAccessList<Scalar> -> Scalar) =
+let makeSimplex (point : Point) step f =
+    let n = point.Length
 
+    let generatedList =
+        generateList n (fun i -> point + (makeBasisUnit n i * step) )
+
+    Vector.cons point generatedList    //to do:
+    |> Vector.map (fun vertex -> vertex, (f vertex) )
+    |> simplexSort
 
 /// (define simplex-centroid
 /// (lambda (simplex)
@@ -51,43 +98,9 @@ let makeSimplex point step f =
 ///            (a-reduce vector+vector
 ///                  (map simplex-vertex simplex)))))
 let simplexCentroid =
-    fun simplex ->
-        let scalar = 1. / (Seq.length simplex |> float)
-        simplex
-     //   |> Seq.reduce ()
-    ()
-
-/// (define (simplex-add-entry entry s)
-///   (let ((fv (simplex-value entry)))
-///     (let loop ((s s))
-///       (cond ((null? s) (list entry))
-///             ((> fv (simplex-value (car s))) (cons entry s))
-///             (else (cons (car s) (loop (cdr s))))))))
-let simplexAddEntry entry s =
-    let fv = List.tail entry
-    let rec loop s' =
-        if s' = List.empty then
-            entry::[]
-        elif fv > List.tail s'.Head then
-            entry::s'
-        else
-            s'.Head::(loop s'.Tail)
-            
-    loop s
-
-/// (define (simplex-sort s)
-///   (let lp ((s s) (ans '()))
-///     (if (null? s)
-///         ans
-///         (lp (cdr s) (simplex-add-entry (car s) ans)))))
-let simplexSort s =
-    let rec loop s ans =
-        match s with
-        | [] -> ans
-        | hd::tl ->
-            loop tl (simplexAddEntry hd ans)
-
-    loop s []
+    fun (simplex : Simplex) ->
+        let scalar = Scalar.Float 1. / simplex.Length
+        scalar * (Vector.reduce (+) <| Vector.map simplexVertex simplex)
 
 /// (define extender
 ///   (lambda (p1 p2)
@@ -95,16 +108,29 @@ let simplexSort s =
 ///       (lambda (k)
 ///         (vector+vector p1 (scalar*vector k dp))))))
 let extender =
-    fun (p1 : float []) p2 ->
-        let dp =
-            Array.zip p2 p1
-            |> Array.map (fun (p2, p1) -> p2 - p1)
-        fun k ->
-            let scalarTimesVector scalar vector =
-                vector |> Array.map (fun x -> scalar * x)
-            Array.zip p1 (scalarTimesVector k dp)
-            |> Array.map (fun (p1, p2) -> p1 + p2)
+    fun (p1 : Point) (p2 : Point) ->
+        let dp = p2 - p1
+        fun k -> (p1 + (dp * k)) :> Point
 
+/// (define (simplex-adjoin v fv s)
+///   (simplex-add-entry (simplex-entry v fv) s))
+let simplexAdjoin v fv s =
+    simplexAddEntry (simplexEntry v fv) s
+
+/// (define (stationary? simplex epsilon)
+///   (close-enuf? (simplex-value (simplex-highest simplex))
+///                (simplex-value (simplex-lowest simplex))
+///                epsilon))
+
+let isStationary (simplex : Simplex) (epsilon : float) =
+    let diff = (simplexValue (simplexHighest simplex)) - simplexValue (simplexLowest simplex)
+
+    let epsilon' = Scalar.Float epsilon
+
+    if diff < epsilon' && diff > (-1. * epsilon') then
+        true
+    else
+        false
 
 /// (define (nelder-mead f start-pt start-step epsilon maxiter)
 ///   (define shrink-coef 0.5)
@@ -155,69 +181,69 @@ let extender =
 ///             (list 'maxcount (simplex-lowest simplex) count)
 ///             (limit (nm-step simplex) (fix:+ count 1)))))
 ///   (limit (make-simplex start-pt start-step f) 0))
-let nelderMead f startPt startStep epsilon maxiter =
-    let shrinkCoef = 0.5
-    let reflectionCoef = 2.0
-    let expansionCoef = 3.0
-    let contractionCoef1 = 1.5
+let nelderMead (f : Point -> Scalar) startPt startStep epsilon maxiter =
+    let shrinkCoef = Scalar.Float 0.5
+    let reflectionCoef = Scalar.Float 2.0
+    let expansionCoef = Scalar.Float 3.0
+    let contractionCoef1 = Scalar.Float 1.5
     let contractionCoef2 = 2. - contractionCoef1
 
-    let simplexShrink point simplex =
-        let pv = Array.head point
+    let simplexShrink point (simplex : Simplex) =
+        let pv = (simplexVertex point)
         simplex
-        |> Array.map (fun sp ->
-            if point = sp then
+        |> Vector.map (fun sp ->
+            if Vector.structuralEquals (simplexVertex point) (simplexVertex sp) then 
                 sp
             else
-                let vertex = (extender pv (Array.head sp)) shrinkCoef
-                [|Array.append vertex (f vertex)|]
+                let vertex = (extender pv (simplexVertex sp)) shrinkCoef
+                vertex, (f vertex)
         )
-        |> Array.map (fun xs -> 
-            xs
-            |> Array.map (fun ys -> Array.toList ys)
-            |> Array.toList
-        )
-        |> Array.toList
         |> simplexSort
 
-    let nmStep simplex =
+    let nmStep (simplex : Simplex) =
         let g = simplexHighest simplex
-        //let h = simplexNextHighest simplex
+        let h = simplexNextHighest simplex
         let s = simplexLowest simplex
         let sH = simplexButHighest simplex
         let vg = simplexVertex g
         let fg = simplexValue g
-        //let fh = simplexValue h
+        let fh = simplexValue h
         let fs = simplexValue s
-        //let extend = extender vg (simplexCentroid sH)
-        //let vr = extend reflectionCoef   
-        ()
-        //let fr = f vr                 //try reflection
+        let extend = extender vg (simplexCentroid sH)
+        let vr = extend reflectionCoef   
+        let fr = f vr                
                                       
-        //if fr < fh then                  //reflection successful                         
-        //      if fr < fs  then               //new minimum 
-        //          let ve = extend expansionCoef              
-        //          let fe = f ve      //try expansion
+        if fr < fh then                  //reflection successful                         
+            if fr < fs  then               //new minimum 
+                let ve = extend expansionCoef              
+                let fe = f ve      //try expansion
                   
-        //          if fe < fs then           //expansion successful
-        //                simplexAdjoin ve fe sH
-        //          else
-        //                simplexAdjoin vr fr sH
-        //      else
-        //          simplexAdjoin vr fr sH
+                if fe < fs then           //expansion successful
+                    simplexAdjoin ve fe sH
+                else
+                    simplexAdjoin vr fr sH
+            else
+                simplexAdjoin vr fr sH
 
-        //else
-        //      let vc = extend (if fr < fg then contractionCoef1 else contractionCoef2)                        
-        //      let fc = f vc          //try contraction                                 
-        //      if fc < fg then              //contraction successful
-        //            simplexAdjoin vc fc sH
-        //      else
-        //            simplexShrink s simplex
+        else
+            let vc = extend (if fr < fg then contractionCoef1 else contractionCoef2)                        
+            let fc = f vc          //try contraction                                 
+            if fc < fg then              //contraction successful
+                simplexAdjoin vc fc sH
+            else
+                simplexShrink s simplex
 
+    let rec limit simplex count =
+        if false then printfn "%A" (simplexLowest simplex)
+        if isStationary simplex epsilon then
+            Ok ((simplexLowest simplex), count)
+        else
+            if count = maxiter then
+                Error ("max iterations", (simplexLowest simplex), count)
+            else 
+                limit (nmStep simplex) (count + 1)
 
-
-    ()
-
+    limit (makeSimplex startPt startStep f) 0
 
 /// (define (multidimensional-minimize f parameters)
 ///   (let ((f (compose f vector->list)))
@@ -231,6 +257,12 @@ let nelderMead f startPt startStep epsilon maxiter =
 ///       (vector->list (caadr result))
 ///       (error "Minimizer did not converge" result)))))
 
-let multidimensionalMinimize f parameters : Scalar [] =
-  // let f = compose f vector->list
-   [||]
+let multidimensionalMinimize (f : UpIndexed -> float) (parameters : RandomAccessList<Indexable>) =
+    let f' = 
+        fun (p : Point) -> f p |> Scalar.Float
+
+    match nelderMead f' parameters nelderStartStep nelderEpsilon nelderMaxiter with
+    | Ok ((point, _), _) ->
+        point
+    | Error (_, best, count) ->
+        failwith <| sprintf "multidimensionalMinimize failed max iterations %i %A" count best

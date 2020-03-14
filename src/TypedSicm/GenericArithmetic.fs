@@ -469,6 +469,24 @@ type Scalar =
             | Func x' -> x' / y |> Indexable.Func
         )
 
+    static member (+) (x : Scalar, ys) = 
+        ys |> Vector.map (fun y -> x + y)
+
+    static member (*) (x : Scalar, ys) = 
+        ys |> Vector.map (fun y -> x * y)
+
+    static member (-) (x : Scalar, ys) = 
+        ys |> Vector.map (fun y -> x - y)
+
+    static member (-) (xs, y : Scalar) = 
+        xs |> Vector.map (fun x -> x - y)
+
+    static member (/) (x : Scalar, ys) = 
+        ys |> Vector.map (fun y -> x / y)
+
+    static member (/) (xs, y : Scalar) = 
+        xs |> Vector.map (fun x -> x / y)
+
 and Time = Scalar
 
 and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =  

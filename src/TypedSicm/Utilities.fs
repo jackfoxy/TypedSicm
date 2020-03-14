@@ -6,6 +6,13 @@ open GenericArithmetic
 
 module Vector = RandomAccessList
 
+/// (define (v:make-basis-unit n i)	; #(0 0 ... 1 ... 0) n long, 1 in ith position
+///  (v:generate n (lambda (j) (if (fix:= j i) :one :zero))))
+let makeBasisUnit n i =
+    n |> fun j ->
+            if j = i then Scalar.Int 1
+            else Scalar.Int 0
+
 /// (define *machine-epsilon*
 ///   (let loop ((e 1.0))
 ///      (if (= 1.0 (+ e 1.0))
@@ -30,7 +37,7 @@ type MinimizeResult =
     }
 
 /// (define simplex-entry cons)
-let private privateCons x y = x :: y
+let private privateCons (x : Scalar)  y = Vector.cons x y
 let cons = privateCons
 
 /// (define *sqrt-machine-epsilon* 
@@ -215,13 +222,13 @@ let minimize f lowx highx =
 let linearInterpolants (x0 : Scalar) (x1 : Scalar) n =
     let dx = x1 - x0
     let sucN = n + 1
-    let rec loop xs i =
+    let rec loop i (xs : RandomAccessList<Indexable>) =
         if i > n then
-            xs
+            Vector.rev xs
         else
-            loop (Vector.cons (Indexable.Scalar (x0 + (i * dx) / sucN)) xs) (i + 1) 
+            loop  (i + 1) (Vector.cons (Indexable.Scalar (x0 + (i * dx) / sucN)) xs)
 
-    loop Vector.empty 1
+    loop 1 Vector.empty<Indexable>
 
 /// define (generate-list n proc) ; ==> ( (proc 0) (proc 1) ... (proc n-1) )
 ///   (let loop ((i (fix:- n 1)) (list '()))

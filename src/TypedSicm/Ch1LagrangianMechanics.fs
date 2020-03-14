@@ -134,11 +134,11 @@ module Ch1_LagrangianMechanics =
         ///                            (+ q (* eps eta))
         ///                            t1
         ///                            t2)))
-        let variedFreeParticleAction mass q nu time1 time2 eps =
+        let variedFreeParticleAction mass q nu time1 time2 (eps : Scalar) =
             let eta = makeEta nu time1 time2
             lagrangianAction 
                 (lagrangianFreeParticle mass) 
-                (Vector.map2 (+) q (eps * eta))
+                (q + (eps * eta))
                 time1 
                 time2
        
@@ -152,6 +152,7 @@ module Ch1_LagrangianMechanics =
 
         let test2 () = 
             variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) (Scalar.Float 0.001)
+
         let test3 () = 
             let vFPA = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.)
             let vFPA' =
@@ -162,24 +163,22 @@ module Ch1_LagrangianMechanics =
         /// (define ((parametric-path-action Lagrangian t0 q0 t1 q1) qs)
         ///     (let ((path (make-path t0 q0 t1 q1 qs)))
         ///         (Lagrangian-action Lagrangian path t0 t1)))
-        let parametricPathAction lagrangian t0 q0 t1 q1 =
-            fun qs ->
-                let path = makePath t0 q0 t1 q1 qs 
-                lagrangianAction lagrangian path t0 t1
+        let parametricPathAction lagrangian t0 q0 t1 q1 qs =
+            let path = makePath t0 q0 t1 q1 qs 
+            lagrangianAction lagrangian path t0 t1
 
-        ///// (define (find-path Lagrangian t0 q0 t1 q1 n)
-        /////     (let ((initial-qs (linear-interpolants q0 q1 n)))
-        /////         (let ((minimizing-qs
-        /////                 (multidimensional-minimize
-        /////                     (parametric-path-action Lagrangian t0 q0 t1 q1)
-        /////                     initial-qs)))
-        /////             (make-path t0 q0 t1 q1 minimizing-qs))))
-        //let findPath lagrangian t0 q0 t1 q1 n =
-        //    let initialQs = linearInterpolants q0 q1 n
-        //    let minimizingQs =
-        //        multidimensionalMinimize
-        //            (parametricPathAction lagrangian t0 q0 t1 q1)
-        //            initialQs
-        //        |> Array.toList
-        //    makePath t0 q0 t1 q1 minimizingQs
+        /// (define (find-path Lagrangian t0 q0 t1 q1 n)
+        ///     (let ((initial-qs (linear-interpolants q0 q1 n)))
+        ///         (let ((minimizing-qs
+        ///                 (multidimensional-minimize
+        ///                     (parametric-path-action Lagrangian t0 q0 t1 q1)
+        ///                     initial-qs)))
+        ///             (make-path t0 q0 t1 q1 minimizing-qs))))
+        let findPath lagrangian t0 q0 t1 q1 n =
+            let initialQs = linearInterpolants q0 q1 n
+            let minimizingQs =
+                multidimensionalMinimize
+                    (parametricPathAction lagrangian t0 q0 t1 q1)
+                    initialQs
+            makePath t0 q0 t1 q1 minimizingQs
 
