@@ -1,0 +1,6 @@
+(define (simplex-add-entry entry s)
+  (let ((fv (simplex-value entry)))
+    (let loop ((s s))
+      (cond ((null? s) (list entry))
+            ((> fv (simplex-value (car s))) (cons entry s))
+            (else (cons (car s) (loop (cdr s))))))))

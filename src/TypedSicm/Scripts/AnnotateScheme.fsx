@@ -1,8 +1,10 @@
 ﻿open System
 open System.IO
 
-let filePath = @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\lagrangeInterpolationFunction.scm"
-let outPath = @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\lagrangeInterpolationFunctionAnnotated.scm"
+let fileName = "linearInterpolants"
+
+let filePath =  sprintf @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\%s.scm" fileName
+let outPath = sprintf  @"E:\GitRepos\TypedSicm\src\TypedSicm\Scripts\%sAnnotated.scm" fileName
 
 let data = File.ReadAllLines filePath
 

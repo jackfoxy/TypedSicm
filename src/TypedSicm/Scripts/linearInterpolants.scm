@@ -1,0 +1,7 @@
+(define (linear-interpolants x0 x1 n)
+  (let ((dx (- x1 x0)) (n+1 (fix:+ n 1)))
+    (let lp ((i 1) (xs '()))
+      (if (fix:> i n)
+      (reverse xs)
+      (lp (fix:+ i 1)
+          (cons (+ x0 (/ (* i dx) n+1)) xs))))))
