@@ -62,7 +62,7 @@ let simplexAddEntry (entry : SimplexEntry) s =
 ///     (if (null? s)
 ///         ans
 ///         (lp (cdr s) (simplex-add-entry (car s) ans)))))
-let simplexSort (s : Simplex) =
+let simplexSort s =
     let rec loop (s : Simplex) ans =
         match s with
         | Vector.Nil -> ans
@@ -224,7 +224,6 @@ let nelderMead (f : Point -> Scalar) startPt startStep epsilon maxiter =
                     simplexAdjoin vr fr sH
             else
                 simplexAdjoin vr fr sH
-
         else
             let vc = extend (if fr < fg then contractionCoef1 else contractionCoef2)                        
             let fc = f vc          //try contraction                                 
@@ -257,9 +256,9 @@ let nelderMead (f : Point -> Scalar) startPt startStep epsilon maxiter =
 ///       (vector->list (caadr result))
 ///       (error "Minimizer did not converge" result)))))
 
-let multidimensionalMinimize (f : UpIndexed -> float) (parameters : RandomAccessList<Indexable>) =
+let multidimensionalMinimize (f : UpIndexed -> float) parameters =
     let f' = 
-        fun (p : Point) -> f p |> Scalar.Float
+        fun p -> f p |> Scalar.Float
 
     match nelderMead f' parameters nelderStartStep nelderEpsilon nelderMaxiter with
     | Ok ((point, _), _) ->
