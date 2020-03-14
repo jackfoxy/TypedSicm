@@ -41,9 +41,9 @@ module Ch1_LagrangianMechanics =
             |> Vector.map (fun f -> 
                 match f with
                 | Func f' -> 
-                    derivitave f'.Invoke |> indexableFunc
+                    derivative f'.Invoke |> indexableFunc
                 | Scalar s -> 
-                    derivitave id |> indexableFunc
+                    derivative id |> indexableFunc
             )
         {
             Time = time      
