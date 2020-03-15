@@ -15,13 +15,22 @@ module Tests =
     let testSimpleTests =
         
         testList "Ch1_LagrangianMechanics" [
-            testCase "S4 Computing Actions" <| fun () ->
+            testCase "particle action" <| fun () ->
                 let result = Ch1_LagrangianMechanics.S4ComputingActions.test1()
                 Expect.floatClose Accuracy.high result 435. "Expected 435"
 
-            testCase "varied minimum action" <| fun () ->
+            testCase "varied minimum free particle action" <| fun () ->
                 let result = Ch1_LagrangianMechanics.S4ComputingActions.test2()
                 Expect.floatClose Accuracy.medium result 436.29 "Expected 436.29"
+
+            testCase "minimumize free particle action" <| fun () ->
+                match Ch1_LagrangianMechanics.S4ComputingActions.test3() with
+                | Ok result ->
+                    Expect.floatClose Accuracy.medium result.Minimum 435. "Result Ok, but result.Minimum wrong"
+                    Expect.equal result.Iterations 5 "Result Ok, but result.Iterations wrong"
+
+                | Error result ->
+                    Expect.isTrue false <| sprintf "Result was error %A" result
 
             //testPropertyWithConfig config10k "whitespace" <|
             //    fun  () ->
