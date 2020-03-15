@@ -12,7 +12,7 @@ module Tests =
     let configReplay = { FsCheckConfig.defaultConfig with maxTest = 10000 ; replay = Some <| (1940624926, 296296394) }
 
     [<Tests>]
-    let testSimpleTests =
+    let ch1LagrangianMechanicsTests =
         
         testList "Ch1_LagrangianMechanics" [
             testCase "particle action" <| fun () ->
@@ -32,10 +32,5 @@ module Tests =
                 | Error result ->
                     Expect.isTrue false <| sprintf "Result was error %A" result
 
-            //testPropertyWithConfig config10k "whitespace" <|
-            //    fun  () ->
-            //        Prop.forAll (Arb.fromGen <| whitespaceString())
-            //            (fun (x : string) -> 
-            //                x = x)
         ]
 

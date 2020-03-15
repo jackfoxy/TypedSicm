@@ -11,6 +11,7 @@ nuget Expecto.FsCheck
 nuget FSharpx.Collections
 nuget MathNet.Numerics.FSharp
 nuget Microsoft.NET.Test.Sdk
+nuget XPlot.GoogleCharts
 nuget YoloDev.Expecto.TestSdk
 
 group Formatting
