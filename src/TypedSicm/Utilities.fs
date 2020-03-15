@@ -9,9 +9,13 @@ module Vector = RandomAccessList
 /// (define (v:make-basis-unit n i)	; #(0 0 ... 1 ... 0) n long, 1 in ith position
 ///  (v:generate n (lambda (j) (if (fix:= j i) :one :zero))))
 let makeBasisUnit n i =
-    n |> fun j ->
-            if j = i then Scalar.Int 1
-            else Scalar.Int 0
+    [|
+        for n' = 0 to n - 1 do
+            n' 
+            |> fun j ->
+                if j = i then Scalar.Int 1 |> Indexable.Scalar
+                else Scalar.Int 0 |> Indexable.Scalar
+    |] |> Vector.ofSeq
 
 /// (define *machine-epsilon*
 ///   (let loop ((e 1.0))
@@ -236,13 +240,13 @@ let linearInterpolants (x0 : Scalar) (x1 : Scalar) n =
 ///         list
 ///         (loop (fix:- i 1) (cons (proc i) list)))))
 let generateList n proc =
-    let rec loop xs i =
+    let rec loop i xs =
         if i < 0 then
             xs
         else
-            loop (Vector.cons (proc i) xs) (i - 1) 
+            loop (i - 1)  (Vector.cons (proc i) xs) 
 
-    loop Vector.empty (n - 1)
+    loop (n - 1) Vector.empty 
 
 /// (define (lagrange-interpolation-function ys xs)
 ///   (let ((n (length ys)))

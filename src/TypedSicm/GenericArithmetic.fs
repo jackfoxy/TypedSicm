@@ -1,10 +1,5 @@
 ﻿module TypedSicm.GenericArithmetic
 
-#if INTERACTIVE
-#r @"E:\GitRepos\TypedSicm\packages\MathNet.Numerics\lib\netstandard2.0\MathNet.Numerics.dll"
-#r @"E:\GitRepos\TypedSicm\packages\MathNet.Numerics.FSharp\lib\netstandard2.0\MathNet.Numerics.FSharp.dll"
-#endif
-
 open System
 open System.Numerics
 open FSharpx.Collections
