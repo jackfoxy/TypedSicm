@@ -11,7 +11,7 @@
 open XPlot.GoogleCharts
 open FSharpx.Collections
 open TypedSicm
-//open Utilities
+open Utilities
 open GenericArithmetic
 
 module Vector = RandomAccessList
@@ -39,44 +39,68 @@ let options =
 
 //to do: x is a function, generate n plotable points
 
-x 
-|> Vector.map (fun x -> 
-    let x =
-     match x with 
-     | Indexable.Scalar s -> scalarToFloat s  :> obj
-     | Indexable.Func f -> f.Invoke :> obj
-    printfn "%A" x
-) 
-|> ignore
+let increment = (pi/2) / 1000
+let xs = generateList 1000 (fun i -> i * increment)
 
 
-//let h = MathNet.Numerics.Statistics.Histogram(statistics, 20)
+let xs' =
+    x
+    |> Vector.map (fun x -> 
+         match x with 
+         | Indexable.Scalar s ->
+            let s' = scalarToFloat s
+            [|s', s'|] |> Vector.ofSeq
+         | Indexable.Func f -> 
+            xs
+            |> Vector.map (fun x -> 
+                scalarToFloat x, (f.Invoke x |> scalarToFloat)
+            )
 
-let data, labels = Vector.toSeq (x |> Vector.map (fun x -> match x with | Indexable.Scalar s -> scalarToFloat s )),  []
-        //[
-    //for i = 0 to h.BucketCount - 1 do
-    //    yield (h.[i].LowerBound, h.[i].UpperBound, int h.[i].Count)
-    //        ]
-    //        |> Seq.map (fun (lowerBound, upperBound, count) ->
-    //let data =
-    //    significantDigitsToString upperBound, count
+    ) 
 
-    //match
-    //    [ 
-    //        "fstStdDevAbove", median + stdDev
-    //        "fstStdDevBelow", median - stdDev
-    //        "twoStdDevAbove", median + (stdDev * 2.)
-    //        "twoStdDevBelow", median - (stdDev * 2.)
-    //        "median", median
-    //    ]
-    //    |> List.tryFind (fun (_, value) -> value >= lowerBound && value <= upperBound ) with
-    //| Some (label, _) ->
-    //    data, label
-    //| None ->
-    //    data, " "
 
-    //)
-    //|> Seq.toList
-    //|> List.unzip
+
+let blah = xs'.Head
+
+let s = Vector.toSeq blah
+
+let data =  Array.ofSeq s
+
+let n = 1
+
+let labels =  ["time"; ""]
 
 (data, labels, options) |> Chart.Line |> Chart.Show
+//@@@@@@@@@@@@@@@@
+
+let options' =
+    Options(
+        title = sprintf "Pendulum" ,
+           // connName.Value stats.Name wellType stats.MeasurementType (significantDigitsToString stats.Median) (significantDigitsToString stats.StdDev),
+        vAxis =
+            Axis(
+                title = "Position"
+            ),
+        hAxis =
+            Axis(
+                title = "Time"
+            ),
+        displayAnnotations = true
+    )
+
+let ys' =
+    xs
+    |> Vector.map (fun x ->  (x |> scalarToFloat), System.Math.Cos (x |> scalarToFloat) )
+
+let s' = Vector.toSeq  ys'
+
+let data' =  Array.ofSeq s'
+
+(data', labels, options') |> Chart.Line |> Chart.Show
+
+let diff =
+    Array.zip data data'
+    |> Array.map (fun ((keyx, x), (keyy, y)) -> keyx, x - y)
+
+
+(diff, labels, options') |> Chart.Line |> Chart.Show
