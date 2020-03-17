@@ -42,6 +42,7 @@ namespace PaketLoadScripts
 #r "../../../packages/Microsoft.TestPlatform.ObjectModel/lib/netstandard2.0/Microsoft.TestPlatform.CoreUtilities.dll" 
 #r "../../../packages/System.Text.Encoding.CodePages/lib/netstandard2.0/System.Text.Encoding.CodePages.dll" 
 #r "../../../packages/XPlot.GoogleCharts/lib/netstandard2.0/XPlot.GoogleCharts.dll" 
+#r "../../../packages/XPlot.Plotly/lib/netstandard2.0/XPlot.Plotly.dll"
 #r "../../../packages/Mono.Cecil/lib/netstandard2.0/Mono.Cecil.Rocks.dll" 
 #r "../../../packages/Mono.Cecil/lib/netstandard2.0/Mono.Cecil.Pdb.dll" 
 #r "../../../packages/Mono.Cecil/lib/netstandard2.0/Mono.Cecil.Mdb.dll" 

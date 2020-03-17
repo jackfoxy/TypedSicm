@@ -12,6 +12,7 @@ nuget FSharpx.Collections
 nuget MathNet.Numerics.FSharp
 nuget Microsoft.NET.Test.Sdk
 nuget XPlot.GoogleCharts
+nuget XPlot.Plotly
 nuget YoloDev.Expecto.TestSdk
 
 group Formatting
