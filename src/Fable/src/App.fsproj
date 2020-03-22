@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="lib\Fable.Browser.SVG.fs" />
+    <Compile Include="lib\D3.fs" />
+    <Compile Include="lib\Plotly.fs" />
+    <Compile Include="Graphing.fs" />
+    <Compile Include="HTML.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="public\index.html" />
+    <None Include="README.md" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TypedSicm\TypedSicm.fsproj" />
+  </ItemGroup>
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+</Project>

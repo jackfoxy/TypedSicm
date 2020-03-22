@@ -1,6 +1,8 @@
 framework: auto-detect
 source https://api.nuget.org/v3/index.json
 
+nuget Fable.Browser.Dom
+nuget Fable.Core
 nuget FSharp.Core
 nuget Argu
 
