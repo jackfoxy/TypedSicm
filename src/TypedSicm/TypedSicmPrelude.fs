@@ -26,8 +26,8 @@ let wrapScalarOrFunction (f :  Scalar -> Indexable) =
         match f (Float y) with
         | Scalar s ->
             scalarToFloat s
-        | _ ->
-                invalidArg "wrapScalarFunction" "klunky, fix later"
+        | Indexable.Func func -> 
+            func.Invoke (Float y) |> scalarToFloat
 
 let wrapFloatFunction (f : (float -> float)) =
     fun (y : Scalar) -> 
@@ -59,3 +59,10 @@ let scalarOrFuncToScalar x =
 
 let indexableFunc f =
     f |> ScalarFunc |> Indexable.Func
+
+let inline squareVector vector =
+    vector
+    |> Vector.map (fun x -> x * x)
+    |> Vector.reduce (+)
+
+let pi = Scalar.Float System.Math.PI

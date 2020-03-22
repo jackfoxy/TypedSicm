@@ -86,10 +86,13 @@ let makeSimplex (point : Point) step f =
     let n = point.Length
 
     let generatedList =
-        generateList n (fun i -> point + (makeBasisUnit n i * step) )
+        generateList n (fun i -> 
+            let basisUnit = makeBasisUnit n i
+            point + (basisUnit * (Scalar.Float step))
+        )
 
     Vector.cons point generatedList    //to do:
-    |> Vector.map (fun vertex -> vertex, (f vertex) )
+    |> Vector.map (fun vertex -> vertex, f vertex )
     |> simplexSort
 
 /// (define simplex-centroid
@@ -261,7 +264,7 @@ let multidimensionalMinimize (f : UpIndexed -> float) parameters =
         fun p -> f p |> Scalar.Float
 
     match nelderMead f' parameters nelderStartStep nelderEpsilon nelderMaxiter with
-    | Ok ((point, _), _) ->
+    | Ok ((point, score), count) ->
         point
     | Error (_, best, count) ->
         failwith <| sprintf "multidimensionalMinimize failed max iterations %i %A" count best

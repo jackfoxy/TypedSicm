@@ -174,11 +174,25 @@ module Ch1_LagrangianMechanics =
         ///                     (parametric-path-action Lagrangian t0 q0 t1 q1)
         ///                     initial-qs)))
         ///             (make-path t0 q0 t1 q1 minimizing-qs))))
-        let findPath lagrangian t0 q0 t1 q1 n =
+        let findPath lagrangian time0 q0 time1 q1 n =
             let initialQs = linearInterpolants q0 q1 n
             let minimizingQs =
                 multidimensionalMinimize
-                    (parametricPathAction lagrangian t0 q0 t1 q1)
+                    (parametricPathAction lagrangian time0 q0 time1 q1)
                     initialQs
-            makePath t0 q0 t1 q1 minimizingQs
+            makePath time0 q0 time1 q1 minimizingQs
 
+        /// (define ((L-harmonic m k) local)
+        ///   (let ((q (coordinate local))
+        ///       (v (velocity local)))
+        ///     (- (* 1/2 m (square v)) (* 1/2 k (square q)))))
+        let lagrangianHarmonic (m : float) (k : float) local =
+            let q = local.CoordninatePath
+            let v = velocity local
+
+            (m * (squareVector v) / 2) - (k * (squareVector q) / 2)
+
+        /// (define q       
+        ///   (find-path (L-harmonic 1.0 1.0) 0.0 1.0 :pi/2 0.0 3))
+        let q = findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Scalar.Float 1.0) (pi/2) (Scalar.Float 0.0) 3
+        
