@@ -2,10 +2,9 @@
 module TypedSicm.TypedSicmPrelude
 
 open MathNet.Numerics
-open FSharpx.Collections
 open GenericArithmetic
 
-module Vector = RandomAccessList
+module Vector = List
     
 let scalarToFloat scalar =
      match scalar with
@@ -47,11 +46,6 @@ let definiteIntegral (f : Scalar -> Indexable) start finish =
     let f' : System.Func<float, float> = System.Func<float, float>(wrapScalarOrFunction f)
     Integrate.OnClosedInterval(f', scalarToFloat start, scalarToFloat finish)
 
-let vectorConj x (xs : UpIndexed) =
-    Vector.rev xs
-    |> (Vector.cons x)
-    |> Vector.rev
-
 let scalarOrFuncToScalar x =
     match x with
     | Indexable.Scalar s -> s
@@ -66,3 +60,48 @@ let inline squareVector vector =
     |> Vector.reduce (+)
 
 let pi = Scalar.Float System.Math.PI
+
+type List<'T> with
+    static member inline Add (xs : list<'T1>, ys : list<'T1>) =
+        if xs.Length = ys.Length  then
+            if xs.Length = 0 then
+                xs
+            else
+                List.zip xs ys
+                |> List.map (fun (x, y) -> x + y)
+        else
+            invalidArg "zip" "length of list not the same"
+
+    static member inline Add (xs : list<'T1>, x : 'T1) =
+        if xs.Length = 0 then
+            xs
+        else
+           xs
+           |> List.map (fun y -> x + y)
+
+    static member inline Multiply (xs : list<'T1>, ys : list<'T1>) = 
+        if xs.Length = ys.Length  then
+            if xs.Length = 0 then
+                xs
+            else
+               List.zip xs ys
+               |> List.map (fun (x, y) -> x * y)
+        else
+            invalidArg "zip" "length of list not the same"
+
+    static member inline Multiply (xs : list<'T1>, x : 'T1) = 
+        if xs.Length = 0 then
+            xs
+        else
+           xs
+           |> List.map (fun y -> x * y)
+
+    static member inline Subtract (xs : list<'T1>, ys : list<'T1>) = 
+        if xs.Length = ys.Length  then
+            if xs.Length = 0 then
+                xs
+            else
+                List.zip xs ys
+                |> List.map (fun (x, y) -> x - y)
+        else
+         invalidArg "zip" "length of list not the same"

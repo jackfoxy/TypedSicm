@@ -1,12 +1,11 @@
 ﻿namespace TypedSicm
 
-open FSharpx.Collections
 open Utilities
 open GenericArithmetic
 open NelderMead
 open Ch1_LagrangianMechanics.S4ComputingActions
 
-module Vector = RandomAccessList
+module Vector = List
 
 module Excercise1_5 =
     let increment = (pi/2) / 1000
@@ -18,7 +17,7 @@ module Excercise1_5 =
              match x with 
              | Indexable.Scalar s ->
                 let s' = scalarToFloat s
-                [|s', s'|] |> Vector.ofSeq
+                [s', s']
              | Indexable.Func f -> 
                 increments
                 |> Vector.map (fun x -> 
@@ -30,7 +29,7 @@ module Excercise1_5 =
         |> Vector.toSeq
         |> Array.ofSeq
 
-    let mutable incrementalPaths : RandomAccessList<Indexable> list = list.Empty 
+    let mutable incrementalPaths : list<Indexable> list = []
     
     let parametricPathAction lagrangian t0 q0 t1 q1 qs =
         let path = makePath t0 q0 t1 q1 qs 

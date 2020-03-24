@@ -1,21 +1,20 @@
 ﻿module TypedSicm.Utilities
 
 open System
-open FSharpx.Collections
 open GenericArithmetic
 
-module Vector = RandomAccessList
+module Vector = List
 
 /// (define (v:make-basis-unit n i)	; #(0 0 ... 1 ... 0) n long, 1 in ith position
 ///  (v:generate n (lambda (j) (if (fix:= j i) :one :zero))))
 let makeBasisUnit n i =
-    [|
+    [
         for n' = 0 to n - 1 do
             n' 
             |> fun j ->
                 if j = i then Scalar.Int 1 |> Indexable.Scalar
                 else Scalar.Int 0 |> Indexable.Scalar
-    |] |> Vector.ofSeq
+    ]
 
 /// (define *machine-epsilon*
 ///   (let loop ((e 1.0))
@@ -40,9 +39,9 @@ type MinimizeResult =
         Iterations : int
     }
 
-/// (define simplex-entry cons)
-let private privateCons (x : Scalar)  y = Vector.cons x y
-let cons = privateCons
+///// (define simplex-entry cons)
+//let private privateCons (x : Scalar)  y = x::y
+//let cons = privateCons
 
 /// (define *sqrt-machine-epsilon* 
 ///   (sqrt *machine-epsilon*))
@@ -226,11 +225,11 @@ let minimize f lowx highx =
 let linearInterpolants (x0 : Scalar) (x1 : Scalar) n =
     let dx = x1 - x0
     let sucN = n + 1
-    let rec loop i (xs : RandomAccessList<Indexable>) =
+    let rec loop i (xs : list<Indexable>) =
         if i > n then
             Vector.rev xs
         else
-            loop  (i + 1) (Vector.cons (Indexable.Scalar (x0 + (i * dx) / sucN)) xs)
+            loop  (i + 1) ((Indexable.Scalar (x0 + (i * dx) / sucN))::xs)
 
     loop 1 Vector.empty<Indexable>
 
@@ -244,7 +243,7 @@ let generateList n proc =
         if i < 0 then
             xs
         else
-            loop (i - 1)  (Vector.cons (proc i) xs) 
+            loop (i - 1)  ((proc i)::xs) 
 
     loop (n - 1) Vector.empty 
 
@@ -314,9 +313,9 @@ let makePath (t0 : Time) q0 (t1 : Time) q1 (qs : UpIndexed) =
     let t0 = Indexable.Scalar t0
     let t1 = Indexable.Scalar t1
 
-    [| 
+    [
         lagrangeInterpolation
-            (Vector.cons q0 (vectorConj q1 qs))
-            (Vector.cons t0 (vectorConj t1 ts)) 
+            ([q0] @ qs @ [q1])
+            ([t0] @ ts @ [t1]) 
         |> indexableFunc
-    |] |> Vector.ofSeq
+    ]

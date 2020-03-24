@@ -16,14 +16,14 @@ let layout = createObj [
       "title", "Evolution of Paths" :> obj
     ]
 
-let x = seq { xMin..xMax } |> Array.ofSeq
-let y = x |> Array.map obj
+//let x = seq { xMin..xMax } |> Array.ofSeq
+//let y = x |> Array.map obj
 
-//let allPaths = Excercise1_5.getPaths
+let allPaths = Excercise1_5.getPaths
 
-//let x, y =
-//    allPaths.[0]
-//    |> Array.unzip
+let x, y =
+    allPaths.[0]
+    |> Array.unzip
 
 plot !^ graph x y layout |> ignore
 

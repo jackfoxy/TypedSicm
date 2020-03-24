@@ -2,9 +2,8 @@
 
 open System
 open System.Numerics
-open FSharpx.Collections
 
-module Vector = RandomAccessList
+module Vector = List
 
 [<CustomComparison>]
 [<CustomEquality>]
@@ -894,7 +893,7 @@ and Indexable =
         | Scalar x', Func y' -> x' / y' |> Indexable.Func
         | Func x', Func y' -> x' / y' |> Indexable.Func
 
-and UpIndexed = RandomAccessList<Indexable>
+and UpIndexed = list<Indexable>
 
 and DownIndexed =  (Scalar -> Scalar) []
 

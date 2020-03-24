@@ -9,12 +9,11 @@
 
 open System.Diagnostics
 open XPlot.GoogleCharts
-open FSharpx.Collections
 open TypedSicm
 open Utilities
 open GenericArithmetic
 
-module Vector = RandomAccessList
+module Vector = List
 
 open Ch1_LagrangianMechanics.S4ComputingActions
 
@@ -51,7 +50,7 @@ let harmonicPath path =
          match x with 
          | Indexable.Scalar s ->
             let s' = scalarToFloat s
-            [|s', s'|] |> Vector.ofSeq
+            [s', s']
          | Indexable.Func f -> 
             increments
             |> Vector.map (fun x -> 

@@ -1,8 +1,6 @@
 ﻿namespace TypedSicm.Tests
 
-
 open Expecto
-open FSharpx.Collections
 //open FsCheck
 //open GeneratorsCode
 open TypedSicm
@@ -348,7 +346,7 @@ module GenericArithmetic =
         ]
 
     let wFunc = ScalarFunc (fun z -> z * Scalar.Int 2)
-    let upIndexed = RandomAccessList.ofSeq [| Indexable.Func wFunc |]
+    let upIndexed = [ Indexable.Func wFunc ]
 
     [<Tests>]
     let genericArithmeticUpIndexed =

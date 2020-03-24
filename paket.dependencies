@@ -10,7 +10,6 @@ nuget Expecto
 nuget Expecto.BenchmarkDotNet
 nuget Expecto.FsCheck
 
-nuget FSharpx.Collections
 nuget MathNet.Numerics.FSharp
 nuget Microsoft.NET.Test.Sdk
 nuget XPlot.GoogleCharts

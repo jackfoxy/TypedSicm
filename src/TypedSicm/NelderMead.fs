@@ -1,14 +1,14 @@
 module TypedSicm.NelderMead
 
-open FSharpx.Collections
+open FSharp.Collections
 open Utilities
 open GenericArithmetic
 
-module Vector = RandomAccessList
+module Vector = List
 
-type Point = RandomAccessList<Indexable>
+type Point = list<Indexable>
 type SimplexEntry = Point * Scalar
-type Simplex = RandomAccessList<SimplexEntry>
+type Simplex = list<SimplexEntry>
 
 /// (define nelder-start-step .01)
 let nelderStartStep = 0.01 
@@ -49,11 +49,11 @@ let simplexAddEntry (entry : SimplexEntry) s =
 
     let rec loop (s' : Simplex) =
         if s'.IsEmpty then
-            [|entry|] |> Vector.ofSeq
+            [entry]
         elif fv > (simplexValue s'.Head) then
-            Vector.cons entry s'
+            entry::s'
         else
-            Vector.cons s'.Head (loop s'.Tail)
+             s'.Head::(loop s'.Tail)
             
     loop s
 
@@ -65,8 +65,8 @@ let simplexAddEntry (entry : SimplexEntry) s =
 let simplexSort s =
     let rec loop (s : Simplex) ans =
         match s with
-        | Vector.Nil -> ans
-        | Vector.Cons  (hd, tl) ->
+        | [] -> ans
+        | hd::tl ->
             loop tl (simplexAddEntry hd ans)
 
     loop s Vector.empty<SimplexEntry>
@@ -81,17 +81,19 @@ let simplexSort s =
 ///              (vector+vector point
 ///                (scalar*vector step
 ///              (v:make-basis-unit n i))))))))))
-//let makeSimplex (point : RandomAccessList<Scalar>) (step : Scalar) (f : RandomAccessList<Scalar> -> Scalar) =
 let makeSimplex (point : Point) step f =
     let n = point.Length
 
     let generatedList =
         generateList n (fun i -> 
             let basisUnit = makeBasisUnit n i
-            point + (basisUnit * (Scalar.Float step))
+
+            let xs = basisUnit * (Scalar.Float step)
+
+            List.Add(xs, point)
         )
 
-    Vector.cons point generatedList    //to do:
+    (point::generatedList)   
     |> Vector.map (fun vertex -> vertex, f vertex )
     |> simplexSort
 
@@ -103,7 +105,17 @@ let makeSimplex (point : Point) step f =
 let simplexCentroid =
     fun (simplex : Simplex) ->
         let scalar = Scalar.Float 1. / simplex.Length
-        scalar * (Vector.reduce (+) <| Vector.map simplexVertex simplex)
+        let xs = Vector.map simplexVertex simplex
+        let zeroPoint =
+            xs.Head
+            |> Vector.map (fun _ -> Scalar.Float 0. |> Indexable.Scalar)
+
+        let reduction = 
+            (zeroPoint, xs)
+            ||> Vector.fold (fun s t ->  List.Add(s, t))
+        List.Multiply(reduction, Indexable.Scalar scalar)
+        //scalar * (Vector.reduce (+) <| Vector.map simplexVertex simplex)
+        
 
 /// (define extender
 ///   (lambda (p1 p2)
@@ -112,8 +124,8 @@ let simplexCentroid =
 ///         (vector+vector p1 (scalar*vector k dp))))))
 let extender =
     fun (p1 : Point) (p2 : Point) ->
-        let dp = p2 - p1
-        fun k -> (p1 + (dp * k)) :> Point
+        let dp = List.Subtract(p2, p1)
+        fun k -> List.Add(p1, (List.Multiply(dp, Indexable.Scalar k)))
 
 /// (define (simplex-adjoin v fv s)
 ///   (simplex-add-entry (simplex-entry v fv) s))
@@ -195,7 +207,7 @@ let nelderMead (f : Point -> Scalar) startPt startStep epsilon maxiter =
         let pv = (simplexVertex point)
         simplex
         |> Vector.map (fun sp ->
-            if Vector.structuralEquals (simplexVertex point) (simplexVertex sp) then 
+            if (simplexVertex point) = (simplexVertex sp) then 
                 sp
             else
                 let vertex = (extender pv (simplexVertex sp)) shrinkCoef

@@ -9,7 +9,6 @@
 //#load "../Ch1LagrangianMechanics.fs"
 
 open XPlot.Plotly
-open FSharpx.Collections
 //open TypedSicm
 //open Utilities
 //open GenericArithmetic

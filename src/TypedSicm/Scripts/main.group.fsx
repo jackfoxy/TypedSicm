@@ -12,7 +12,6 @@ namespace PaketLoadScripts
 #r "../../../packages/System.Security.Cryptography.ProtectedData/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll" 
 #r "../../../packages/Expecto/lib/netstandard2.0/Expecto.dll" 
 #r "../../../packages/FsCheck/lib/netstandard2.0/FsCheck.dll" 
-#r "../../../packages/FSharpx.Collections/lib/netstandard2.0/FSharpx.Collections.dll" 
 #r "../../../packages/Microsoft.TestPlatform.ObjectModel/lib/netstandard2.0/Microsoft.TestPlatform.PlatformAbstractions.dll" 
 #r "../../../packages/Microsoft.Win32.SystemEvents/lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll" 
 #r "../../../packages/System.Memory/lib/netstandard2.0/System.Memory.dll" 

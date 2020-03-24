@@ -8,14 +8,13 @@
 //#load "../Ch1LagrangianMechanics.fs"
 
 open XPlot.GoogleCharts
-open FSharpx.Collections
 open TypedSicm
 open Utilities
 open GenericArithmetic
 open NelderMead
 open Ch1_LagrangianMechanics.S4ComputingActions
 
-module Vector = RandomAccessList
+module Vector = List
 
 let increment = (pi/2) / 1000
 let increments = generateList 1000 (fun i -> i * increment)
@@ -26,7 +25,7 @@ let harmonicPath path =
          match x with 
          | Indexable.Scalar s ->
             let s' = scalarToFloat s
-            [|s', s'|] |> Vector.ofSeq
+            [s', s']
          | Indexable.Func f -> 
             increments
             |> Vector.map (fun x -> 
@@ -35,10 +34,9 @@ let harmonicPath path =
 
     ) 
     |> Vector.head
-    |> Vector.toSeq
     |> Array.ofSeq
 
-let mutable incrementalPaths : RandomAccessList<Indexable> list = list.Empty 
+let mutable incrementalPaths : list<Indexable> list  = List.Empty
 
 let parametricPathAction lagrangian t0 q0 t1 q1 qs =
     let path = makePath t0 q0 t1 q1 qs 

@@ -1,12 +1,11 @@
 namespace TypedSicm
 
 open System
-open FSharpx.Collections
 open GenericArithmetic
 open Utilities
 open NelderMead
 
-module Vector = RandomAccessList
+module Vector = List
 
 /// Chapter 1, Lagrangian Mechanics
 module Ch1_LagrangianMechanics =
@@ -107,11 +106,11 @@ module Ch1_LagrangianMechanics =
         ///         (+ (* 3 t) 5)
         ///         (+ (* 2 t) 1)))
         let testPath : UpIndexed =
-            [|
+            [
                 (fun (time : Time) -> 4 * time + 7) |> indexableFunc
                 (fun (time : Time) -> 3 * time + 5) |> indexableFunc
                 (fun (time : Time) -> 2 * time + 1) |> indexableFunc
-            |] |> Vector.ofSeq
+            ]
 
         let test1 () = lagrangianAction (lagrangianFreeParticle (Scalar.Int 3)) testPath (floatToTime 0.) (floatToTime 10.)
         
@@ -138,17 +137,17 @@ module Ch1_LagrangianMechanics =
             let eta = makeEta nu time1 time2
             lagrangianAction 
                 (lagrangianFreeParticle mass) 
-                (q + (eps * eta))
+                (List.Add(q, (eps * eta)))
                 time1 
                 time2
        
         ///(up sin cos square)
         let nu : UpIndexed =
-            [|
+            [
                 wrapFloatFunction Math.Sin |> indexableFunc
                 wrapFloatFunction Math.Cos |> indexableFunc
                 (fun x -> x * x) |> indexableFunc
-            |] |> Vector.ofSeq
+            ]
 
         let test2 () = 
             variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) (Scalar.Float 0.001)
