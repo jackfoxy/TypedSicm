@@ -4,17 +4,25 @@ open Browser
 
 module HTML =
 
-  let graphId = "graph"
+    let graphId = "graph"
 
-  let graph = document.createElement "div"
-  graph.id <- graphId
+    let graph = document.createElement "div"
+    graph.id <- graphId
 
-  document.body.appendChild(graph) |> ignore
+    document.body.appendChild(graph) |> ignore
 
-  let initButton = document.createElement "button"
-  initButton.innerText <- "Reset"
-  document.body.appendChild(initButton) |> ignore
+    let resetButton = document.createElement "button"
+    resetButton.innerText <- "Reset"
+    document.body.appendChild(resetButton) |> ignore
 
-  let stepButton = document.createElement "button"
-  stepButton.innerText <- "Step"
-  document.body.appendChild(stepButton) |> ignore
+    let backButton = document.createElement "button"
+    backButton.innerText <- "<"
+    document.body.appendChild(backButton) |> ignore
+
+    let forwardButton = document.createElement "button"
+    forwardButton.innerText <- ">"
+    document.body.appendChild(forwardButton) |> ignore
+
+    let status = document.createElement "h3"
+    status.innerText <- ""
+    document.body.appendChild(status) |> ignore

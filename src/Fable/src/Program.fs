@@ -1,67 +1,77 @@
-module App
+﻿module App
 
 open Fable.Core.JsInterop
 open TypedSicm
 open Graphing
 open HTML
 
-let obj x = x ** 2.0
-
 let xMin = 0.0
-let xMax = 1.6
+let xMax = 1.572
 
 let layout = createObj [
-      "xaxis" ==> createObj [ "range" ==>  struct(xMin, xMax) ]
-      "yaxis" ==> createObj [ "range" ==>  struct(0., 1.1) ]
-      "title", "Evolution of Paths" :> obj
+    "xaxis" ==> 
+        createObj [ 
+                    "range" ==>  struct(xMin, xMax) 
+                    "tickmode" ==> "array"
+                    "tickvals" ==> [|0.785; 1.571|]
+                    "ticktext" ==> [|"&#x3c4;/8"; "τ/4"|]
+        ]
+    "yaxis" ==> createObj [ "range" ==>  struct(0., 1.1) ]
+    "title" ==>  "Evolution of Paths Using Nelder-Mead Simplex"
+    "font" ==> 
+        createObj [ 
+                    "family" ==> "Noto Sans"
+                    "size" ==> 18
+        ]
+    "height" ==> 850
     ]
 
-//let x = seq { xMin..xMax } |> Array.ofSeq
-//let y = x |> Array.map obj
+let allPaths = Excercise1_5Data.xs
 
-let allPaths = Excercise1_5.getPaths
+let mutable state = 0
 
-let x, y =
-    allPaths.[0]
-    |> Array.unzip
+let callPlot () =
+    status.innerText <- 
+        if state = 0 then
+            "initial path"
+        elif state =  allPaths.Length - 1 then
+            "final path"
+        else
+            sprintf "path %i of %i" (state + 1) allPaths.Length
 
-plot !^ graph x y layout |> ignore
+    let x0, y0 =
+        allPaths.[state]
+        |> Array.unzip
 
-let rnd = System.Random()
+    if state > 0 then
+        let x1, y1 =
+            allPaths.[state - 1]
+            |> Array.unzip
+        if state > 1 then
+            let x2, y2 =
+                allPaths.[state - 2]
+                |> Array.unzip
+            plot !^ graph [|x0; x1; x2|] [|y0; y1; y2|] layout state |> ignore
+        else
+            plot !^ graph [|x0; x1|] [|y0; y1|] layout state |> ignore
+    else
+        plot !^ graph [|x0|] [|y0|] layout state |> ignore
 
-//let getStartingPoints () = 
-//    [|0;1;2|]
-//    |> Array.map (fun x -> 
-//        let x = rnd.Next(int(xMin), int(xMax)) |> float
-//        Point([x;])
-//    )
-
-//let mutable simplex = Simplex(getStartingPoints(), (fun p -> obj p.data.[0]))
-
-//let restyle (simplex:Simplex) = 
-//  let xs = simplex.points |> Array.map (fun p -> p.data.[0]) |> (fun x -> Array.append x x)
-//  let ys = simplex.points |> Array.map (fun p -> obj p.data.[0]) |> (fun x -> Array.append x x)
-//  restyle !^ graph x y xs ys layout
-
-initButton.onclick <- (fun _ -> 
-    (*
-  let points = getStartingPoints()
-  simplex <- Simplex(points, (fun p -> obj p.data.[0]))
-  restyle simplex
-  *)
-  let obj x = x ** 2.5
-  let x = seq { xMin..xMax } |> Array.ofSeq
-  let y = x |> Array.map obj
-  plot !^ graph x y layout
-  initButton.innerText <- "asdfbah"
+resetButton.onclick <- (fun _ -> 
+    state <- 0
+    callPlot ()
 )
 
-//stepButton.onclick <- (fun _ -> 
+forwardButton.onclick <- (fun _ -> 
+    if state < allPaths.Length - 1 then
+        state <- state + 1
+    callPlot ()
+)
 
-//  // console.log(simplex.points |> Array.map(fun x -> x.data |> Array.ofList))
-//  simplex <- simplex.compute()
-//  // console.log(simplex.points |> Array.map(fun x -> x.data |> Array.ofList))
-//  restyle simplex
-//)
+backButton.onclick <- (fun _ -> 
+    if state > 0 then
+        state <- state - 1
+    callPlot ()
+)
 
-
+callPlot ()

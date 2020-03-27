@@ -1,6 +1,7 @@
 framework: auto-detect
 source https://api.nuget.org/v3/index.json
 
+nuget DiffSharp 0.8.4-beta 
 nuget Fable.Browser.Dom
 nuget Fable.Core
 nuget FSharp.Core

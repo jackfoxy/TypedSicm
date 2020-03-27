@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Excercise1_5Data.fs" />
     <Compile Include="lib\Fable.Browser.SVG.fs" />
     <Compile Include="lib\D3.fs" />
     <Compile Include="lib\Plotly.fs" />
@@ -13,9 +14,6 @@
     <None Include="public\index.html" />
     <None Include="README.md" />
     <None Include="paket.references" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\TypedSicm\TypedSicm.fsproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

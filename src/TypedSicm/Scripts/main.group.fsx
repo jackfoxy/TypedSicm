@@ -1,6 +1,7 @@
 namespace PaketLoadScripts
 
 #r "../../../packages/Argu/lib/netstandard2.0/Argu.dll" 
+#r "../../../packages/DiffSharp/lib/netstandard2.0/DiffSharp.dll"
 #r "../../../packages/System.Collections.Concurrent/lib/netstandard1.3/System.Collections.Concurrent.dll" 
 #r "../../../packages/System.Linq/lib/netstandard1.6/System.Linq.dll" 
 #r "../../../packages/System.Runtime.Numerics/lib/netstandard1.3/System.Runtime.Numerics.dll" 
@@ -49,3 +50,5 @@ namespace PaketLoadScripts
 #r "../../../packages/Microsoft.CodeAnalysis.CSharp/lib/netstandard2.0/Microsoft.CodeAnalysis.CSharp.dll" 
 #r "../../../packages/Microsoft.TestPlatform.ObjectModel/lib/netstandard2.0/Microsoft.VisualStudio.TestPlatform.ObjectModel.dll" 
 #r "../../../packages/System.Reflection.Metadata/lib/netstandard2.0/System.Reflection.Metadata.dll" 
+
+#r "../../../packages/Fable.Core/lib/netstandard2.0/Fable.Core.dll"

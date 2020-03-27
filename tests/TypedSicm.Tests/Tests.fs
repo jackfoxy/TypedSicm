@@ -27,7 +27,7 @@ module Tests =
                 match Ch1_LagrangianMechanics.S4ComputingActions.test3() with
                 | Ok result ->
                     Expect.floatClose Accuracy.medium result.Minimum 435. "Result Ok, but result.Minimum wrong"
-                    Expect.equal result.Iterations 5 "Result Ok, but result.Iterations wrong"
+                    Expect.equal result.Iterations 6 "Result Ok, but result.Iterations wrong"
 
                 | Error result ->
                     Expect.isTrue false <| sprintf "Result was error %A" result

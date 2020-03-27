@@ -3,6 +3,7 @@ module TypedSicm.TypedSicmPrelude
 
 open MathNet.Numerics
 open GenericArithmetic
+open DiffSharp.Numerical.Float64
 
 module Vector = List
     
@@ -36,12 +37,10 @@ let wrapFloatFunction (f : (float -> float)) =
         | BigInt y -> f (float  y) |> Scalar.Float
         | Float y -> f y |> Scalar.Float 
 
-// to do: look at http://diffsharp.github.io/DiffSharp/index.html
 let derivative (f : (Scalar -> Scalar)) =
-    Differentiate.firstDerivativeFunc (wrapScalarFunction f) 
+    diff (wrapScalarFunction f) 
     |> wrapFloatFunction
 
-//let definiteIntegral (f : (Scalar -> Scalar)) start finish =
 let definiteIntegral (f : Scalar -> Indexable) start finish =
     let f' : System.Func<float, float> = System.Func<float, float>(wrapScalarOrFunction f)
     Integrate.OnClosedInterval(f', scalarToFloat start, scalarToFloat finish)
