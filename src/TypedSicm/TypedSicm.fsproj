@@ -13,7 +13,7 @@
     <Compile Include="Utilities.fs" />
     <Compile Include="NelderMead.fs" />
     <Compile Include="Ch1LagrangianMechanics.fs" />
-    <Compile Include="Excercise1.5.fs" />
+    <Compile Include="Exercise1.5.fs" />
     <Compile Include="UOM.fs" />
     <None Include="Scripts\Exercise1.6.fsx" />
     <None Include="Scripts\Exercise1.5.fsx" />

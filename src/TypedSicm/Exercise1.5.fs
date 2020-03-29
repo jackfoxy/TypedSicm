@@ -7,7 +7,7 @@ open Ch1_LagrangianMechanics.S4ComputingActions
 
 module Vector = List
 
-module Excercise1_5 =
+module Exercise1_5 =
     let increment = (pi/2) / 1000
     let increments = generateList 1000 (fun i -> i * increment)
     
