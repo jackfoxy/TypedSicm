@@ -12,8 +12,8 @@ let makeBasisUnit n i =
         for n' = 0 to n - 1 do
             n' 
             |> fun j ->
-                if j = i then Scalar.Int 1 |> Indexable.Scalar
-                else Scalar.Int 0 |> Indexable.Scalar
+                if j = i then Real.Int 1 |> Indexable.Scalar
+                else Real.Int 0 |> Indexable.Scalar
     ]
 
 /// (define *machine-epsilon*
@@ -222,7 +222,7 @@ let minimize f lowx highx =
 ///       (reverse xs)
 ///       (lp (fix:+ i 1)
 ///           (cons (+ x0 (/ (* i dx) n+1)) xs))))))
-let linearInterpolants (x0 : Scalar) (x1 : Scalar) n =
+let linearInterpolants (x0 : Real) (x1 : Real) n =
     let dx = x1 - x0
     let sucN = n + 1
     let rec loop i (xs : list<Indexable>) =
@@ -293,7 +293,7 @@ let lagrangeInterpolation (ys : UpIndexed) (xs : UpIndexed) =
                                         scalarOrFuncToScalar (xs.[j] - xi) 
                                     elif j = i then 
                                         (-1. ** (float i)) 
-                                        |> Scalar.Float
+                                        |> Real.Float
                                     else 
                                         scalarOrFuncToScalar (xi - xs.[j]) )
                     dividend / divisor )

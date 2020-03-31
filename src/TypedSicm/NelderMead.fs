@@ -7,7 +7,7 @@ open GenericArithmetic
 module Vector = List
 
 type Point = list<Indexable>
-type SimplexEntry = Point * Scalar
+type SimplexEntry = Point * Real
 type Simplex = list<SimplexEntry>
 
 /// (define nelder-start-step .01)
@@ -88,7 +88,7 @@ let makeSimplex (point : Point) step f =
         generateList n (fun i -> 
             let basisUnit = makeBasisUnit n i
 
-            let xs = basisUnit * (Scalar.Float step)
+            let xs = basisUnit * (Real.Float step)
 
             List.Add(xs, point)
         )
@@ -104,11 +104,11 @@ let makeSimplex (point : Point) step f =
 ///                  (map simplex-vertex simplex)))))
 let simplexCentroid =
     fun (simplex : Simplex) ->
-        let scalar = Scalar.Float 1. / simplex.Length
+        let scalar = Real.Float 1. / simplex.Length
         let xs = Vector.map simplexVertex simplex
         let zeroPoint =
             xs.Head
-            |> Vector.map (fun _ -> Scalar.Float 0. |> Indexable.Scalar)
+            |> Vector.map (fun _ -> Real.Float 0. |> Indexable.Scalar)
 
         let reduction = 
             (zeroPoint, xs)
@@ -140,7 +140,7 @@ let simplexAdjoin v fv s =
 let isStationary (simplex : Simplex) (epsilon : float) =
     let diff = (simplexValue (simplexHighest simplex)) - simplexValue (simplexLowest simplex)
 
-    let epsilon' = Scalar.Float epsilon
+    let epsilon' = Real.Float epsilon
 
     if diff < epsilon' && diff > (-1. * epsilon') then
         true
@@ -196,11 +196,11 @@ let isStationary (simplex : Simplex) (epsilon : float) =
 ///             (list 'maxcount (simplex-lowest simplex) count)
 ///             (limit (nm-step simplex) (fix:+ count 1)))))
 ///   (limit (make-simplex start-pt start-step f) 0))
-let nelderMead (f : Point -> Scalar) startPt startStep epsilon maxiter =
-    let shrinkCoef = Scalar.Float 0.5
-    let reflectionCoef = Scalar.Float 2.0
-    let expansionCoef = Scalar.Float 3.0
-    let contractionCoef1 = Scalar.Float 1.5
+let nelderMead (f : Point -> Real) startPt startStep epsilon maxiter =
+    let shrinkCoef = Real.Float 0.5
+    let reflectionCoef = Real.Float 2.0
+    let expansionCoef = Real.Float 3.0
+    let contractionCoef1 = Real.Float 1.5
     let contractionCoef2 = 2. - contractionCoef1
 
     let simplexShrink point (simplex : Simplex) =
@@ -273,7 +273,7 @@ let nelderMead (f : Point -> Scalar) startPt startStep epsilon maxiter =
 
 let multidimensionalMinimize (f : UpIndexed -> float) parameters =
     let f' = 
-        fun p -> f p |> Scalar.Float
+        fun p -> f p |> Real.Float
 
     match nelderMead f' parameters nelderStartStep nelderEpsilon nelderMaxiter with
     | Ok ((point, score), count) ->

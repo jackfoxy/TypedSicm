@@ -7,7 +7,7 @@ module Vector = List
 
 [<CustomComparison>]
 [<CustomEquality>]
-type Scalar =
+type Real =
 | Int of int
 | Int64 of int64
 | BigInt of BigInteger
@@ -18,7 +18,7 @@ type Scalar =
     interface IComparable with
         member __.CompareTo yobj =
             match yobj with
-            | :? Scalar as y -> 
+            | :? Real as y -> 
                 match __, y with
                 | Int x, Int y -> 
                     if x > y then 1
@@ -103,7 +103,7 @@ type Scalar =
 
     override __.Equals yobj = 
         match yobj with
-        | :? Scalar as y -> 
+        | :? Real as y -> 
             match __, y with
             | Int x, Int y -> x = y
             | Int x, Int64 y -> int64 x = y
@@ -224,7 +224,7 @@ type Scalar =
         | BigInt x -> BigInt (x + BigInteger y)
         | Float x -> Float (x + float y)
     
-    static member (+) (x : int, y : Scalar) = 
+    static member (+) (x : int, y : Real) = 
         y + x
 
     static member (+) (x, y : int64) = 
@@ -234,7 +234,7 @@ type Scalar =
         | BigInt x -> BigInt (x + BigInteger y)
         | Float x -> Float (x + float y)
     
-    static member (+) ((x : int64), y : Scalar) = 
+    static member (+) ((x : int64), y : Real) = 
         y + x
 
     static member (+) (x, y : BigInteger) = 
@@ -244,7 +244,7 @@ type Scalar =
         | BigInt x -> BigInt (x + y)
         | Float x -> Float (x + float y)
     
-    static member (+) ((x : BigInteger), y : Scalar) = 
+    static member (+) ((x : BigInteger), y : Real) = 
         y + x
 
     static member (+) (x, y : float) = 
@@ -254,7 +254,7 @@ type Scalar =
         | BigInt x -> Float (float x + y)
         | Float x -> Float (x + y)
     
-    static member (+) ((x : float), y : Scalar) = 
+    static member (+) ((x : float), y : Real) = 
         y + x
 
     static member (*) (x, y : int) = 
@@ -264,7 +264,7 @@ type Scalar =
         | BigInt x -> BigInt (x * BigInteger y)
         | Float x -> Float (x * float y)
     
-    static member (*) (x : int, y : Scalar) = 
+    static member (*) (x : int, y : Real) = 
         y * x
 
     static member (*) (x, y : int64) = 
@@ -274,7 +274,7 @@ type Scalar =
         | BigInt x -> BigInt (x * BigInteger y)
         | Float x -> Float (x * float y)
     
-    static member (*) ((x : int64), y : Scalar) = 
+    static member (*) ((x : int64), y : Real) = 
         y * x
 
     static member (*) (x, y : BigInteger) = 
@@ -284,7 +284,7 @@ type Scalar =
         | BigInt x -> BigInt (x * y)
         | Float x -> Float (x * float y)
     
-    static member (*) ((x : BigInteger), y : Scalar) = 
+    static member (*) ((x : BigInteger), y : Real) = 
         y * x
 
     static member (*) (x, y : float) = 
@@ -294,7 +294,7 @@ type Scalar =
         | BigInt x -> Float (float x * y)
         | Float x -> Float (x * y)
     
-    static member (*) ((x : float), y : Scalar) = 
+    static member (*) ((x : float), y : Real) = 
         y * x
 
     static member (-) (x, y : int) = 
@@ -409,7 +409,7 @@ type Scalar =
         | BigInt y -> Float (x / float y)
         | Float y -> Float (x / y)
 
-    static member (+) (x : Scalar, ys : UpIndexed) : UpIndexed = 
+    static member (+) (x : Real, ys : UpIndexed) : UpIndexed = 
         ys 
         |> Vector.map (fun y -> 
             match y with
@@ -417,10 +417,10 @@ type Scalar =
             | Func y' -> x + y' |> Indexable.Func
         )
 
-    static member (+) (xs : UpIndexed, y : Scalar) : UpIndexed = 
+    static member (+) (xs : UpIndexed, y : Real) : UpIndexed = 
         y + xs
 
-    static member (*) (x : Scalar, ys : UpIndexed) : UpIndexed = 
+    static member (*) (x : Real, ys : UpIndexed) : UpIndexed = 
         ys 
         |> Vector.map (fun y -> 
             match y with
@@ -428,10 +428,10 @@ type Scalar =
             | Func y' -> x * y' |> Indexable.Func
         )
 
-    static member (*) (xs : UpIndexed, y : Scalar) : UpIndexed = 
+    static member (*) (xs : UpIndexed, y : Real) : UpIndexed = 
         y * xs
 
-    static member (-) (x : Scalar, ys : UpIndexed) : UpIndexed = 
+    static member (-) (x : Real, ys : UpIndexed) : UpIndexed = 
         ys 
         |> Vector.map (fun y -> 
             match y with
@@ -439,7 +439,7 @@ type Scalar =
             | Func y' -> x - y' |> Indexable.Func
         )
 
-    static member (-) (xs : UpIndexed, y : Scalar) : UpIndexed = 
+    static member (-) (xs : UpIndexed, y : Real) : UpIndexed = 
         xs 
         |> Vector.map (fun x -> 
             match x with
@@ -447,7 +447,7 @@ type Scalar =
             | Func x' -> x' - y |> Indexable.Func
         )
 
-    static member (/) (x : Scalar, ys : UpIndexed) : UpIndexed = 
+    static member (/) (x : Real, ys : UpIndexed) : UpIndexed = 
         ys 
         |> Vector.map (fun y -> 
             match y with
@@ -455,7 +455,7 @@ type Scalar =
             | Func y' -> x / y' |> Indexable.Func
         )
 
-    static member (/) (xs : UpIndexed, y : Scalar) : UpIndexed = 
+    static member (/) (xs : UpIndexed, y : Real) : UpIndexed = 
         xs 
         |> Vector.map (fun x -> 
             match x with
@@ -463,34 +463,34 @@ type Scalar =
             | Func x' -> x' / y |> Indexable.Func
         )
 
-    static member (+) (x : Scalar, ys) = 
+    static member (+) (x : Real, ys) = 
         ys |> Vector.map (fun y -> x + y)
 
-    static member (*) (x : Scalar, ys) = 
+    static member (*) (x : Real, ys) = 
         ys |> Vector.map (fun y -> x * y)
 
-    static member (-) (x : Scalar, ys) = 
+    static member (-) (x : Real, ys) = 
         ys |> Vector.map (fun y -> x - y)
 
-    static member (-) (xs, y : Scalar) = 
+    static member (-) (xs, y : Real) = 
         xs |> Vector.map (fun x -> x - y)
 
-    static member (/) (x : Scalar, ys) = 
+    static member (/) (x : Real, ys) = 
         ys |> Vector.map (fun y -> x / y)
 
-    static member (/) (xs, y : Scalar) = 
+    static member (/) (xs, y : Real) = 
         xs |> Vector.map (fun x -> x / y)
 
-and Time = Scalar
+and Time = Real
 
-and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =  
+and [<Class>] ScalarFunc(scalarFunc : (Real -> Real)) =  
     member _.Invoke = scalarFunc
     with 
 
-    static member (+) (x : Scalar, y : ScalarFunc) = 
+    static member (+) (x : Real, y : ScalarFunc) = 
         ScalarFunc (fun z -> x + y.Invoke z)
 
-    static member (+) (x : ScalarFunc, y : Scalar) = 
+    static member (+) (x : ScalarFunc, y : Real) = 
         y + x
 
     static member (+) (x : int, y : ScalarFunc) = 
@@ -520,10 +520,10 @@ and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =
     static member (+) (x: ScalarFunc, y : ScalarFunc) = 
         ScalarFunc (fun z -> x.Invoke z + y.Invoke z)
 
-    static member (*) (x : Scalar, y : ScalarFunc) = 
+    static member (*) (x : Real, y : ScalarFunc) = 
         ScalarFunc (fun z -> x * y.Invoke z)
 
-    static member (*) (x : ScalarFunc, y : Scalar) = 
+    static member (*) (x : ScalarFunc, y : Real) = 
         y * x
 
     static member (*) (x : int, y : ScalarFunc) = 
@@ -553,10 +553,10 @@ and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =
     static member (*) (x: ScalarFunc, y : ScalarFunc) = 
         ScalarFunc (fun z -> x.Invoke z * y.Invoke z)
 
-    static member (-) (x : Scalar, y : ScalarFunc) = 
+    static member (-) (x : Real, y : ScalarFunc) = 
         ScalarFunc (fun z -> x - y.Invoke z)
 
-    static member (-) (x : ScalarFunc, y : Scalar) = 
+    static member (-) (x : ScalarFunc, y : Real) = 
        ScalarFunc (fun z -> x.Invoke z - y)
 
     static member (-) (x : int, y : ScalarFunc) = 
@@ -586,10 +586,10 @@ and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =
     static member (-) (x: ScalarFunc, y : ScalarFunc) = 
         ScalarFunc (fun z -> x.Invoke z - y.Invoke z)
 
-    static member (/) (x : Scalar, y : ScalarFunc) = 
+    static member (/) (x : Real, y : ScalarFunc) = 
         ScalarFunc (fun z -> x / y.Invoke z)
 
-    static member (/) (x : ScalarFunc, y : Scalar) = 
+    static member (/) (x : ScalarFunc, y : Real) = 
        ScalarFunc (fun z -> x.Invoke z / y)
 
     static member (/) (x : int, y : ScalarFunc) = 
@@ -620,19 +620,19 @@ and [<Class>] ScalarFunc(scalarFunc : (Scalar -> Scalar)) =
         ScalarFunc (fun z -> x.Invoke z / y.Invoke z)
 
 and Indexable =
-| Scalar of Scalar
+| Scalar of Real
 | Func of ScalarFunc
 
     with
 
-    static member (+) (x : Scalar, y : Indexable) : Indexable = 
+    static member (+) (x : Real, y : Indexable) : Indexable = 
         match y with
         | Scalar y' -> x + y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z ->  x + y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (+) (x : Indexable, y : Scalar) : Indexable = 
+    static member (+) (x : Indexable, y : Real) : Indexable = 
         y + x
 
     static member (+) (x : int, y : Indexable) : Indexable = 
@@ -682,14 +682,14 @@ and Indexable =
         | Scalar x', Func y' -> x' + y' |> Indexable.Func
         | Func x', Func y' -> x' + y' |> Indexable.Func
 
-    static member (*) (x : Scalar, y : Indexable) : Indexable = 
+    static member (*) (x : Real, y : Indexable) : Indexable = 
         match y with
         | Scalar y -> x * y |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x * y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (*) (x : Indexable, y : Scalar) : Indexable = 
+    static member (*) (x : Indexable, y : Real) : Indexable = 
         y + x
 
     static member (*) (x : int, y : Indexable) : Indexable = 
@@ -739,14 +739,14 @@ and Indexable =
         | Scalar x', Func y' -> x' * y' |> Indexable.Func
         | Func x', Func y' -> x' * y' |> Indexable.Func
 
-    static member (-) (x : Scalar, y : Indexable) : Indexable = 
+    static member (-) (x : Real, y : Indexable) : Indexable = 
         match y with
         | Scalar y' -> x - y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x - y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (-) (x : Indexable, y : Scalar) : Indexable = 
+    static member (-) (x : Indexable, y : Real) : Indexable = 
         match x with
         | Scalar x' -> x' - y |> Indexable.Scalar
         | Func x' -> 
@@ -816,14 +816,14 @@ and Indexable =
         | Scalar x', Func y' -> x' - y' |> Indexable.Func
         | Func x', Func y' -> x' - y' |> Indexable.Func
 
-    static member (/) (x : Scalar, y : Indexable) : Indexable = 
+    static member (/) (x : Real, y : Indexable) : Indexable = 
         match y with
         | Scalar y' -> x / y' |> Indexable.Scalar
         | Func y' -> 
             let w =  (fun z -> x / y'.Invoke z) |> ScalarFunc
             Func w 
 
-    static member (/) (x : Indexable, y : Scalar) : Indexable = 
+    static member (/) (x : Indexable, y : Real) : Indexable = 
         match x with
         | Scalar x' -> x' / y |> Indexable.Scalar
         | Func x' -> 
@@ -895,7 +895,7 @@ and Indexable =
 
 and UpIndexed = list<Indexable>
 
-and DownIndexed =  (Scalar -> Scalar) []
+and DownIndexed =  (Real -> Real) []
 
 //to do: remainder
 //to do: exponentiation

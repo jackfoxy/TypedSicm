@@ -45,7 +45,7 @@ module Exercise1_5 =
                 initialQs
         makePath time0 q0 time1 q1 minimizingQs
     
-    let q = findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Scalar.Float 1.0) (pi/2) (Scalar.Float 0.0) 3
+    let q = findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Real.Float 1.0) (pi/2) (Real.Float 0.0) 3
 
     let getPaths =
         incrementalPaths

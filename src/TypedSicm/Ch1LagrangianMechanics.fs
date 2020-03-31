@@ -32,7 +32,7 @@ module Ch1_LagrangianMechanics =
     ///                  (D fi))))))))))
     ///
     /// (define Gamma path->state-path)
-    type Γ = UpIndexed -> Time -> Local
+  //  type Γ = UpIndexed -> Time -> Local
            
     let gamma (q : UpIndexed) (time : Time) =
         let ds =
@@ -81,7 +81,7 @@ module Ch1_LagrangianMechanics =
         /// (define ((L-free-particle mass) local)
         ///     (let ((v (velocity local)))
         ///     (* 1/2 mass (dot-product v v))))
-        let lagrangianFreeParticle (mass : Scalar) local = 
+        let lagrangianFreeParticle (mass : Real) local = 
             let v = 
                 velocity local
                 |> Vector.map (fun f ->  
@@ -112,7 +112,7 @@ module Ch1_LagrangianMechanics =
                 (fun (time : Time) -> 2 * time + 1) |> indexableFunc
             ]
 
-        let test1 () = lagrangianAction (lagrangianFreeParticle (Scalar.Int 3)) testPath (floatToTime 0.) (floatToTime 10.)
+        let test1 () = lagrangianAction (lagrangianFreeParticle (Real.Int 3)) testPath (floatToTime 0.) (floatToTime 10.)
         
         /// (define ((make-eta nu t1 t2) t)
         ///     (* (- t t1) (- t t2) (nu t)))
@@ -121,7 +121,7 @@ module Ch1_LagrangianMechanics =
             |> Vector.map (fun f -> 
                 match f with
                 | Func f' -> 
-                    fun (t : Scalar) -> (t - time1) * (t - time2) * f'.Invoke t 
+                    fun (t : Real) -> (t - time1) * (t - time2) * f'.Invoke t 
                     |> indexableFunc
                 | _ -> 
                     f
@@ -133,7 +133,7 @@ module Ch1_LagrangianMechanics =
         ///                            (+ q (* eps eta))
         ///                            t1
         ///                            t2)))
-        let variedFreeParticleAction mass q nu time1 time2 (eps : Scalar) =
+        let variedFreeParticleAction mass q nu time1 time2 (eps : Real) =
             let eta = makeEta nu time1 time2
             lagrangianAction 
                 (lagrangianFreeParticle mass) 
@@ -150,13 +150,13 @@ module Ch1_LagrangianMechanics =
             ]
 
         let test2 () = 
-            variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) (Scalar.Float 0.001)
+            variedFreeParticleAction (Real.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.) (Real.Float 0.001)
 
         let test3 () = 
-            let vFPA = variedFreeParticleAction (Scalar.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.)
+            let vFPA = variedFreeParticleAction (Real.Int 3) testPath nu (floatToTime 0.) (floatToTime 10.)
             let vFPA' =
                 fun (x : float) ->
-                    vFPA (Scalar.Float x)
+                    vFPA (Real.Float x)
             minimize vFPA' -2.0 1.
 
         /// (define ((parametric-path-action Lagrangian t0 q0 t1 q1) qs)
@@ -193,5 +193,5 @@ module Ch1_LagrangianMechanics =
 
         /// (define q       
         ///   (find-path (L-harmonic 1.0 1.0) 0.0 1.0 :pi/2 0.0 3))
-        let q = findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Scalar.Float 1.0) (pi/2) (Scalar.Float 0.0) 3
+        let q = findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Real.Float 1.0) (pi/2) (Real.Float 0.0) 3
         
