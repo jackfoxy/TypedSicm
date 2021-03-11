@@ -12,7 +12,7 @@ module Ch1_LagrangianMechanics =
     type Local =
         {
             Time : Time      
-            CoordninatePath : UpIndexed
+            Coordninates : UpIndexed
             Derivatives : UpIndexed []
         }
 
@@ -46,7 +46,7 @@ module Ch1_LagrangianMechanics =
             )
         {
             Time = time      
-            CoordninatePath = q 
+            Coordninates = q 
             Derivatives = [|ds|]
         }
 
@@ -186,7 +186,7 @@ module Ch1_LagrangianMechanics =
         ///       (v (velocity local)))
         ///     (- (* 1/2 m (square v)) (* 1/2 k (square q)))))
         let lagrangianHarmonic (m : float) (k : float) local =
-            let q = local.CoordninatePath
+            let q = local.Coordninates
             let v = velocity local
 
             (m * (squareVector v) / 2) - (k * (squareVector q) / 2)

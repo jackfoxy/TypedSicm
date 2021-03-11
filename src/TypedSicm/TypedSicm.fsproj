@@ -15,6 +15,7 @@
     <Compile Include="Ch1LagrangianMechanics.fs" />
     <Compile Include="Exercise1.5.fs" />
     <Compile Include="UOM.fs" />
+    <None Include="Scripts\Exercise1.8.fsx" />
     <None Include="Scripts\Exercise1.6.fsx" />
     <None Include="Scripts\Exercise1.5.fsx" />
     <None Include="Scripts\Section1.4Charting.fsx" />
