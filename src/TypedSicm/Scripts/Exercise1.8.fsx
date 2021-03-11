@@ -1,5 +1,4 @@
-﻿#load "main.group.fsx"
-#r "../bin/Release/netstandard2.0/TypedSicm.dll"
+﻿#r "../bin/Release/netstandard2.0/TypedSicm.dll"
 
 open TypedSicm
 open GenericArithmetic

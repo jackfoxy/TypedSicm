@@ -20,7 +20,7 @@ open Ch1_LagrangianMechanics.S4ComputingActions
 let findHarmonicPath interpolants = 
     let watch = Stopwatch.StartNew()
     let result = 
-        findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Scalar.Float 1.0) (pi/2) (Scalar.Float 0.0) interpolants
+        findPath (lagrangianHarmonic 1.0 1.0) (floatToTime 0.0) (Real.Float 1.0) (pi/2) (Real.Float 0.0) interpolants
     watch.Stop()
     printfn "Find harmonic path from %i interpolants in %A" interpolants watch.Elapsed
     result
